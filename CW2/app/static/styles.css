@@ -1,0 +1,9 @@
+.glassContainer{
+    /* From https://css.glass */
+    background: rgba(49, 122, 209, 0.29);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(6.5px);
+    -webkit-backdrop-filter: blur(6.5px);
+    border: 1px solid rgba(49, 122, 209, 0.49); 
+}

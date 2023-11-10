@@ -1,6 +1,6 @@
 from app import app
+from flask import render_template, flash, redirect
 
 @app.route('/')
-def index():
-    return "Hello, World!"
-    
+def home():
+    return render_template("home.html")
