@@ -1,0 +1,38 @@
+{%extends "home.html"%}
+{%block content%}
+<!-- Navigation Bar -->
+<div class="container-fluid my-5">
+    <!-- Article or Post Container -->
+    <div class="container">
+        <!-- Image Row -->
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Image with the 'imageResize' class -->
+                <img src="{{ url_for('static', filename='img/girraffe_p.jpg') }}" class="imageResize" alt="Giraffe">
+            </div>
+        </div>
+        <!-- Date and Title Row -->
+        <div class="ro d-flex">
+            <div class="col-md-3">
+                <!-- Date of the Article or Post -->
+                <p class="date-tag fs-5 fw-light my-2">@Rubayea_AlKetbi</p>
+            </div>
+            <div class="col-md-3">
+                <!-- Date of the Article or Post -->
+                <p class="fs-5 fw-light my-2">07.24.2019</p>
+            </div>
+        </div>
+        <!-- Content Row -->
+        <div class="row text-center">
+            <div class="col-md-6">
+                <!-- Heading -->
+                <h1>Welcome to the Giraffe House</h1>
+                <!-- Main Content Paragraph -->
+                <p>The Giraffe House is a non-profit organization that provides a safe haven for giraffes. We are located in the heart of the African Savannah, where giraffes are free to roam and live in their natural habitat. We have been in operation since 1999 and have helped over 100 giraffes find new homes. Our mission is to provide a safe haven for giraffes and educate the public about their plight. We are a 501(c)(3) non-profit organization and rely on donations to continue our work.</p>
+                <!-- Read More or Call to Action Button -->
+                <a href="#" class="btn btn-primary">Read More</a>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock content%}
