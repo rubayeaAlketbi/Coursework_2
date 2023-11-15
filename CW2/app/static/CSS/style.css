@@ -28,3 +28,12 @@
     background-repeat: no-repeat;
     color:white;
 }
+
+.title{
+    font-family: 'Josefin Slab', serif;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center ; /* Aligns the child elements (image) to the right */
+}
