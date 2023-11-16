@@ -18,9 +18,20 @@ def login():
         print("Password: " + login_form.password.data)
     return render_template("login.html",login_form = login_form)
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template("register.html")
+    register_form = RegisterForm()
+    if(register_form.validate_on_submit()):
+        print("Form validated")
+        flash('Register requested for user {}, remember_me={}'.format(register_form.fname.data, register_form.lname.data, register_form.email.data, register_form.password.data, register_form.confirm.data))
+        print("First Name: " + register_form.fname.data)
+        print("Last Name: " + register_form.lname.data)
+        print("Email: " + register_form.email.data)
+        if(register_form.password.data != register_form.confirm.data):
+            print("Passwords do not match")
+        print("Password: " + register_form.password.data)
+        print("Confirm Password: " + register_form.confirm.data)
+    return render_template("register.html",register_form = register_form)
 
 @app.route('/admin')
 def admin():
