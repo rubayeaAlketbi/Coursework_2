@@ -21,10 +21,9 @@ def login():
         email = login_form.email.data
         password = login_form.password.data
         #Check if the user exists in the database
-        user = User.query.filter_by(email=email).first()
-        if(user is not None and user.password == password):
+        if(User.query.filter_by(email=email, password=password).first()):
             print("User exists")
-            # User exists, redirect to the home page
+            #User exists, redirect to the admin page
             return redirect('/admin')
         else:
             print("User does not exist")
@@ -60,12 +59,10 @@ def register():
         else:
             print("User does not exist")
             # User does not exist, create a new user
-            user = User(fname=fname, lname=lname, email=email, password=password)
+            user = User(name=fname +' '+ lname, email=email, password=password)
             # Add the new user to the database
             db.session.add(user)
             db.session.commit()
-            # Redirect to the login page
-            return redirect('/login')
     return render_template("register.html",register_form = register_form)
 
 @app.route('/admin')
