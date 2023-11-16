@@ -1,6 +1,7 @@
-from app import app
+from app import app,db
 from flask import render_template, flash, redirect
 from .forms import LoginForm, RegisterForm
+from .models import User, Merchandise, Animal, MerchandiseAnimal, Order
 
 @app.route('/')
 def about():
@@ -16,6 +17,20 @@ def login():
         flash('Login requested for user {}, remember_me={}'.format(login_form.email.data, login_form.password.data))
         print("Email: " + login_form.email.data)
         print("Password: " + login_form.password.data)
+        #Get the user name email and password from the form
+        email = login_form.email.data
+        password = login_form.password.data
+        #Check if the user exists in the database
+        user = User.query.filter_by(email=email).first()
+        if(user is not None and user.password == password):
+            print("User exists")
+            # User exists, redirect to the home page
+            return redirect('/admin')
+        else:
+            print("User does not exist")
+            # User does not exist, redirect to the login page
+            return redirect('/login')
+        
     return render_template("login.html",login_form = login_form)
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -31,6 +46,26 @@ def register():
             print("Passwords do not match")
         print("Password: " + register_form.password.data)
         print("Confirm Password: " + register_form.confirm.data)
+        # Get the data from the form and create a new user
+        fname = register_form.fname.data
+        lname = register_form.lname.data
+        email = register_form.email.data
+        password = register_form.password.data
+        # Check if the user exists in the database
+        user = User.query.filter_by(email=email).first()
+        if(user is not None):
+            print("User exists")
+            # User exists, redirect to the login page
+            return redirect('/login')
+        else:
+            print("User does not exist")
+            # User does not exist, create a new user
+            user = User(fname=fname, lname=lname, email=email, password=password)
+            # Add the new user to the database
+            db.session.add(user)
+            db.session.commit()
+            # Redirect to the login page
+            return redirect('/login')
     return render_template("register.html",register_form = register_form)
 
 @app.route('/admin')
