@@ -13,35 +13,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Slab&display=swap" rel="stylesheet">
 
-    <title>Home Page</title>
+    <title>Guest Page</title>
 </head>
 <body>
-  <div class="container-fluid colorGradient">
-    <nav class="navbar navbar-expand-lg" data-bs-theme="dark">
+  <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg" data-bs-theme="light">
         <div class="container">
-          <a class="navbar-brand fs-3" href="#">Jungle 🍃</a>
+          <a class="navbar-brand fs-3 te" href="#">Genuinly</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav fs-4 gap-2">
-              <li class="nav-item">
-                <a class="nav-link" href="{{url_for("about")}}">Animals</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Accessibility</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown link
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-              </li>
-            </ul>
             <ul class="navbar-nav ms-auto d-flex gap-4 fs-4">
               <li class="nav-item">
                 <a class="nav-link" href="{{url_for("login")}}">Login</a>
@@ -49,6 +31,7 @@
               <li class="nav-item fs-4">
                 <a class="nav-link"href="{{url_for("register")}}">Sign Up</a>
               </li>
+            </ul>
           </div>
         </div>
       </nav>
