@@ -34,15 +34,13 @@ def login():
 def register():
     register_form = RegisterForm()
     if(register_form.validate_on_submit()):
-        print("Form validated")
-        flash('Register requested for user {}, remember_me={}'.format(register_form.fname.data, register_form.lname.data, register_form.email.data, register_form.password.data, register_form.confirm.data))
-        print("First Name: " + register_form.fname.data)
-        print("Last Name: " + register_form.lname.data)
-        print("Email: " + register_form.email.data)
-        if(register_form.password.data != register_form.confirm.data):
-            print("Passwords do not match")
-        print("Password: " + register_form.password.data)
-        print("Confirm Password: " + register_form.confirm.data)
+        # print("First Name: " + register_form.fname.data)
+        # print("Last Name: " + register_form.lname.data)
+        # print("Email: " + register_form.email.data)
+        # if(register_form.password.data != register_form.confirm.data):
+        #     print("Passwords do not match")
+        # print("Password: " + register_form.password.data)
+        # print("Confirm Password: " + register_form.confirm.data)
         # Get the data from the form and create a new user
         fname = register_form.fname.data
         lname = register_form.lname.data
@@ -61,6 +59,14 @@ def register():
             # Add the new user to the database
             db.session.add(user)
             db.session.commit()
+            # Set the form variables to empty
+            register_form.fname.data = ''
+            register_form.lname.data = ''
+            register_form.email.data = ''
+            register_form.password.data = ''
+            register_form.confirm.data = ''
+            # Redirect to the login page
+            return redirect('/login')
     return render_template("register.html",register_form = register_form)
 
 

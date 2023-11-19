@@ -10,7 +10,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
+    passwordHashed = db.Column(db.String(100), nullable=False)
     orders = db.relationship('Order', backref='user', lazy=True)
     
     # Prevent password from being accessed
@@ -20,10 +20,10 @@ class User(db.Model):
     # Generate password hash
     @password.setter
     def password(self, password):
-        self.password = generate_password_hash(password)
+        self.passwordHashed = generate_password_hash(password)
     # Verify password hash
     def verify_password(self, password):
-        return check_password_hash(self.password, password)
+        return check_password_hash(self.passwordHashed, password)
 
 ''' Merchandise class for database model which merchandise has id, name, price, description.
     The merchandise relation has many to many relationship with animal relation. Merchandise can
