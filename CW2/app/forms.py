@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired,Length,EqualTo
 
 ''' Login form which takes in the email and the password of the user '''
 class LoginForm(FlaskForm):
-    email = StringField('email', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
     password = StringField('Password', validators=[DataRequired(),Length(min=8,max=20)])
     loginButton = SubmitField('Login')
     

@@ -67,6 +67,7 @@ def register():
             register_form.confirm.data = ''
             # Redirect to the login page
             return redirect('/login')
+
     return render_template("register.html",register_form = register_form)
 
 
