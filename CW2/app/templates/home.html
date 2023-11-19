@@ -9,9 +9,9 @@
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Slab&display=swap" rel="stylesheet">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Josefin+Slab&display=swap" rel="stylesheet">
 
     <title>Guest Page</title>
 </head>
@@ -19,17 +19,17 @@
   <div class="container-fluid">
     <nav class="navbar navbar-expand-lg" data-bs-theme="light">
         <div class="container">
-          <a class="navbar-brand fs-3 te" href="#">Genuinly</a>
+          <a class="navbar-brand navTitle fs-1 fw-bold" href="{{url_for("home")}}">💡Lumos</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav ms-auto d-flex gap-4 fs-4">
+            <ul class="navbar-nav ms-auto d-flex gap-2 fs-4 fw-bold">
               <li class="nav-item">
-                <a class="nav-link" href="{{url_for("login")}}">Login</a>
+                <a class="nav-link title" href="{{url_for("login")}}">Login</a>
               </li>
-              <li class="nav-item fs-4">
-                <a class="nav-link"href="{{url_for("register")}}">Sign Up</a>
+              <li class="nav-item fs-4 ">
+                <a class="nav-link title "href="{{url_for("register")}}">Sign Up</a>
               </li>
             </ul>
           </div>

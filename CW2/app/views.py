@@ -4,7 +4,7 @@ from .forms import LoginForm, RegisterForm
 from .models import User, Post, Comment, Tag, post_tag
 
 @app.route('/')
-def about():
+def home():
     return render_template("about.html")
 
 @app.route('/login', methods=['GET', 'POST'])

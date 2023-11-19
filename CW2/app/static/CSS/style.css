@@ -6,19 +6,14 @@
     --baby-powder: #fdfffcff;
 }
 
-.glassContainer{
-    /* From https://css.glass */
-    background: rgba(49, 122, 209, 0.29);
-    border-radius: 16px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(6.5px);
-    -webkit-backdrop-filter: blur(6.5px);
-    border: 1px solid rgba(49, 122, 209, 0.49); 
+
+.navTitle{
+    font-family: 'Courier New', Courier, monospace;
+    font-size: large;
+    text-size-adjust: 100%;
 }
-.colorGradient{
-    background: rgb(225,190,106);
-    background: linear-gradient(90deg, rgba(225,190,106,1) 15%, rgba(64,176,166,1) 91%);
-}
+
+
 
 .imageResize{
     width: 600px; 
@@ -30,7 +25,7 @@
 
 /* Background image */
 .hero{
-    background-image: url("../img/jungle.jpg");
+    background-image: url("../img/gradient_hero.svg");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
