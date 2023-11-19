@@ -1,3 +1,11 @@
+:root{
+    --black: #020100ff;
+    --lapis-lazuli: #235789ff;
+    --school-bus-yellow: #f1d302ff;
+    --fire-engine-red: #c1292eff;
+    --baby-powder: #fdfffcff;
+}
+
 .glassContainer{
     /* From https://css.glass */
     background: rgba(49, 122, 209, 0.29);
@@ -61,3 +69,7 @@
     background: -webkit-linear-gradient(to right, #155799, #159957); 
     background: linear-gradient(to right, #155799, #159957); 
 }
+
+
+
+
