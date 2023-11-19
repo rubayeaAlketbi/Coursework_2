@@ -23,8 +23,6 @@ def login():
         #Check if the user exists in the database
         if(User.query.filter_by(email=email, password=password).first()):
             print("User exists")
-            #User exists, redirect to the admin page
-            return redirect('/admin')
         else:
             print("User does not exist")
             # User does not exist, redirect to the login page
@@ -65,6 +63,7 @@ def register():
             db.session.commit()
     return render_template("register.html",register_form = register_form)
 
+
 @app.route('/admin')
 def admin():
-    return render_template("admin_dash.html")
+    return render_template("admin.html")
