@@ -1,0 +1,24 @@
+{%extends "user_home.html"%}
+{%block content%}
+<div class="container-fluid h-full Cryptonite m-auto py-4">
+    <div class="container glassContainer">
+        <div class="row d-flex flex-row p-4 align-items-center">
+            <div class="col-md-5 justify-content-start">
+                <div class="row">
+                    <div class="col-md-12">
+                        <img src="{{url_for('static', filename='img/user.png')}}" style="max-width:60%; max-height:auto; object-fill:contain; padding:2rem">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7 text-end">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1>Hello</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock content%}

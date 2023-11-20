@@ -1,6 +1,7 @@
 from app import db 
 from werkzeug.security import generate_password_hash, check_password_hash 
 from datetime import datetime
+from flask_login import UserMixin
 
 
 ''' User class which has the following important details
@@ -15,12 +16,12 @@ from datetime import datetime
     The user relation has one to many relationship with post relation.
     User can have one or many post but the post can have only one user.
 '''
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     passwordHashed = db.Column(db.String(100), nullable=False)
-    username = db.Column(db.String(100), unique=True, nullable=False)
+    username = db.Column(db.String(20), unique=True, nullable=False)
     biography = db.Column(db.Text, nullable=True)
     avatar = db.Column(db.String(100), nullable=True)
     posts = db.relationship('Post', backref='user', lazy=True)
@@ -55,7 +56,6 @@ class Post(db.Model):
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
-    posts = db.relationship('Post', secondary='post_tag', backref=db.backref('tags', lazy='dynamic'))
 
 ''' Association table for many to many relationship between post and tag relation.'''
 post_tag = db.Table('post_tag',
