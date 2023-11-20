@@ -13,7 +13,23 @@
     text-size-adjust: 100%;
 }
 
+.hero{
+    background-image: url("../img/gradient_hero.svg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color:white;
+}
 
+.section-title{
+    font-family: 'Courier New', Courier, monospace;
+    font-weight:bolder;
+    color:var(--fire-engine-red);
+}
+.caption{
+    font-weight:bold;
+    color:var(--fire-engine-red);
+}
 
 .imageResize{
     width: 600px; 
@@ -24,13 +40,6 @@
 }
 
 /* Background image */
-.hero{
-    background-image: url("../img/gradient_hero.svg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    color:white;
-}
 
 .title{
     font-family: 'Josefin Slab', serif;
