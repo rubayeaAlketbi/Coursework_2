@@ -1,17 +1,26 @@
 {% extends "user_home.html" %}
 {% block content %}
-<form method = "post" class="formContainer glassContainer" style="max-width:40rem; border-radius:10px;">
-    {{post_form.hidden_tag()}}
-    <div class="mb-1 p-3">
-        {{post_form.title.label(class="form-label")}}
-        {{post_form.title(class="form-control")}}
+<div class = "container-fluid movingGrade h-full py-4">
+    <div class="row">
+        <div class = "col-md-12 mb-4">
+            <h1 class="text-center text-white display-2"> Share your Wisdom 🌠</h1>
+        </div>
+    <div class = "col-md-12">
+        <form method = "post" class="formContainer glassContainer p-4" style="max-width:40rem; border-radius:10px;" >
+            {{post_form.hidden_tag()}}
+            <div class="mb-1 p-3">
+                {{post_form.title.label(class="form-label text-white fs-3")}}
+                {{post_form.title(class="form-control")}}
+            </div>
+            <div class="mb-1 p-3">
+                {{post_form.caption.label(class="form-label text-white fs-3")}}
+                {{post_form.caption(class="form-control")}}
+            </div>
+            <div class="mb-1 p-3 d-flex">
+                {{post_form.postButton(class="btn btn-primary btn-lg" , style="width:100%; margin:auto;")}}
+            </div>
+        </form>
     </div>
-    <div class="mb-1 p-3">
-        {{post_form.caption.label(class="form-label")}}
-        {{post_form.caption(class="form-control")}}
     </div>
-
-    <div class="mb-1 p-3">
-        {{post_form.postButton(class="btn btn-primary")}}
-</form>
+</div>
 {% endblock content%}
