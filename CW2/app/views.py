@@ -1,8 +1,11 @@
 from app import app,db,login_manager
-from flask import render_template, flash, redirect
-from .forms import LoginForm, RegisterForm
+from flask import render_template, flash, redirect,request
+from .forms import LoginForm, UserForm
 from .models import User, Post, Comment, Tag, post_tag
 from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.utils import secure_filename
+import uuid as uuid
+import os
 
 
 
@@ -13,7 +16,7 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    register_form = RegisterForm()
+    register_form = UserForm()
     if(register_form.validate_on_submit()):
         # print("First Name: " + register_form.fname.data)
         # print("Last Name: " + register_form.lname.data)
@@ -82,8 +85,66 @@ def login():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def userDash():
+    register_form = UserForm()
     user = User.query.filter_by(username=current_user.username).first()
-    return render_template("user_dash.html", user=user)
+    id = current_user.id
+    userToEdit = User.query.get_or_404(id)
+    if(request.method == 'POST'):
+        userToEdit.name = register_form.fname.data + ' ' + register_form.lname.data
+        userToEdit.username = request.form['username']
+        userToEdit.email = request.form['email']
+        userToEdit.password = request.form['password']
+       
+        # Grab Image Name 
+        profilePicture = secure_filename(userToEdit.avatar.filename)
+        # Give each profile picture a unique name
+        profileName = str(uuid.uuid1()) + "_" +profilePicture 
+        # Save the profile picture in the static folder
+        userToEdit.avatar = profileName
+        # Check if the username exists in the database
+        user = User.query.filter_by(username=userToEdit.username).first()
+        email = User.query.filter_by(email=userToEdit.email).first()
+        if(user is not None or email is not None):
+            # If the user exists, then ask to change username or email
+            print("Change username or email")
+            return redirect('/dashboard')
+        # If the email and username is unique then update the user
+        else:
+            print("User does not exist")
+            #
+            user = User(name=register_form.fname.data +' '+ register_form.lname.data, email=register_form.email.data, username = register_form.username.data, password=register_form.password.data)
+            # Add the new user to the database
+            db.session.add(user)
+        
+    return render_template("user_dash.html", user=user, register_form=register_form)
+
+@app.route('/edit_user', methods=['GET', 'POST'])
+@login_required
+def editUser():
+    id = current_user.id
+    register_form = UserForm()
+    userToEdit = User.query.get_or_404(id)
+    if(register_form.validate_on_submit()):
+        userToEdit.name = register_form.fname.data + ' ' + register_form.lname.data
+        userToEdit.username = register_form.username.data
+        userToEdit.email = register_form.email.data
+        userToEdit.password = register_form.password.data
+        # Check if the username exists in the database
+        user = User.query.filter_by(username=userToEdit.username).first()
+        email = User.query.filter_by(email=userToEdit.email).first()
+        if(user is not None or email is not None):
+            print("Change username or email")
+            # User exists, redirect to the login page
+            return redirect('/edit/user/<int:id>')
+        else:
+            print("User does not exist")
+            # User does not exist, create a new user
+            user = User(name=register_form.fname.data +' '+ register_form.lname.data, email=register_form.email.data, username = register_form.username.data, password=register_form.password.data)
+            # Add the new user to the database
+            db.session.add(user)
+        db.session.commit()
+        return redirect('/dashboard')
+    return render_template("edit_user.html", user=user, register_form=register_form)
 
 @app.route('/logout', methods=['GET'])
 @login_required

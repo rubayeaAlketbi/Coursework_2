@@ -1,11 +1,10 @@
-{%extends "home.html"%}
+{%extends "user_home.html"%}
 {% block content %}
 <main class="container-fluid p-4 h-full Cryptonite">
     <div class = "container">
         <div class ="row p-2 d-flex justify-content-center align-items-center h-100">
-            <div class = "col-12 text-center">
-                <h1 class="fw-bold text-white">Welcome to the Register page</h1>
-                <p class="fs-4 fw-light text-white">Join the act</p>
+            <div class = "col-12 text-center">Edit Your Account</h1>
+                <p class="fs-4 fw-light text-white">Embrace Changes</p>
             </div>
         <form method = "post" class="formContainer glassContainer" style="max-width:40rem; border-radius:10px;">
             {{register_form.hidden_tag()}}
@@ -45,4 +44,3 @@
 
 
 {% endblock content%}
-

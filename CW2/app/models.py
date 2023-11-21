@@ -23,7 +23,7 @@ class User(db.Model, UserMixin):
     passwordHashed = db.Column(db.String(100), nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
     biography = db.Column(db.Text, nullable=True)
-    avatar = db.Column(db.String(100), nullable=True)
+    avatar = db.Column(db.String(), nullable=True)
     posts = db.relationship('Post', backref='user', lazy=True)
     
     # Prevent password from being accessed
