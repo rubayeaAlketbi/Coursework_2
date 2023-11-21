@@ -1,23 +1,48 @@
 {%extends "user_home.html"%}
 {%block content%}
-<div class="container-fluid h-full Cryptonite m-auto py-4">
+<div class="container-fluid h-full m-aut0 py-4">
     <div class="container glassContainer">
         <div class="row d-flex flex-row p-4 align-items-center">
             <div class="col-md-5 justify-content-start">
                 <div class="row">
                     <div class="col-md-12">
-                        <img src="{{url_for('static', filename='img/user.png')}}" style="max-width:60%; max-height:auto; object-fill:contain; padding:2rem">
+                        <img src="{{url_for('static', filename='img/user.png')}}" style="max-width:70%; max-height:auto; object-fill:contain; padding:0.5rem">
                     </div>
                 </div>
             </div>
             <div class="col-md-7 text-end">
                 <div class="row">
-                    <div class="col-md-12">
-                        <h1>Hello</h1>
+                    <div class="col-md-6">
+                        <div class="info-box glassContainer">
+                            <h1>Total Posts</h1>
+                            <h2>0</h2>
+                        </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="info-box glassContainer">
+                            <h1>Total Tags</h1>
+                            <h2>20</h2>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <div class="row d-flex flex-row p-4 align-items-center">
+            <div class="col-md-5">
+                <ul class="user-info m-auto p-6 ">
+                    <li class= "fs-1 fw-light pb-3">{{user.username}}</span></li>
+                    <li class= "fs-1 fw-light pb-3"> {{user.name}}</li>
+                </ul>
+            </div>
+
+            <div class="col-md-7">
+                <div class="info-box glassContainer">
+                    <h1>Recent Posts</h1>
+                    <h2>0</h2>
                 </div>
             </div>
         </div>
+
+
     </div>
 </div>
 
