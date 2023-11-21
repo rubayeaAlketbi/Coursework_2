@@ -47,9 +47,8 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     caption = db.Column(db.Text, nullable=False)
-    publish_date = db.Column(db.DateTime, nullable=False)
+    publish_date = db.Column(db.DateTime, default=datetime.utcnow())
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    comments = db.relationship('Comment', backref='post', lazy=True)
     tags = db.relationship('Tag', secondary='post_tag', backref=db.backref('posts', lazy='dynamic'))
     
 ''' Tag class which uses tags to categorise posts.'''
@@ -62,11 +61,3 @@ post_tag = db.Table('post_tag',
     db.Column('post_id', db.Integer, db.ForeignKey('post.id'), primary_key=True),
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True)
 )
-
-''' Comment class for database model which comment has id, content, timestamp, author_id, post_id.'''
-class Comment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))

@@ -1,0 +1,17 @@
+{% extends "user_home.html" %}
+{% block content %}
+<form method = "post" class="formContainer glassContainer" style="max-width:40rem; border-radius:10px;">
+    {{post_form.hidden_tag()}}
+    <div class="mb-1 p-3">
+        {{post_form.title.label(class="form-label")}}
+        {{post_form.title(class="form-control")}}
+    </div>
+    <div class="mb-1 p-3">
+        {{post_form.caption.label(class="form-label")}}
+        {{post_form.caption(class="form-control")}}
+    </div>
+
+    <div class="mb-1 p-3">
+        {{post_form.postButton(class="btn btn-primary")}}
+</form>
+{% endblock content%}

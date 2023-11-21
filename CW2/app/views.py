@@ -1,11 +1,12 @@
 from app import app,db,login_manager
 from flask import render_template, flash, redirect,request
-from .forms import LoginForm, UserForm
-from .models import User, Post, Comment, Tag, post_tag
+from .forms import LoginForm, UserForm, PostForm
+from .models import User, Post, Tag, post_tag
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 import uuid as uuid
 import os
+import re
 
 
 
@@ -95,13 +96,22 @@ def userDash():
         userToEdit.email = request.form['email']
         userToEdit.password = request.form['password']
        
-        # Grab Image Name 
-        profilePicture = secure_filename(userToEdit.avatar.filename)
-        # Give each profile picture a unique name
-        profileName = str(uuid.uuid1()) + "_" +profilePicture 
-        # Save the profile picture in the static folder
-        userToEdit.avatar = profileName
-        # Check if the username exists in the database
+        if 'avatar' in request.files:
+            file = request.files['avatar']
+            if file and file.filename:
+                # Secure the filename
+                profilePicture = secure_filename(file.filename)
+                # Generate a unique name for the profile picture
+                profileName = str(uuid.uuid1()) + "_" + profilePicture
+                # Save the file in the desired folder
+                file.save(os.path.join('path_to_save', profileName))
+                # Update the user's avatar field with the new file name
+                userToEdit.avatar = profileName
+            else:
+                # Handle case for no file uploaded
+                print("No file uploaded")
+        else:
+            print("No file part in request")
         user = User.query.filter_by(username=userToEdit.username).first()
         email = User.query.filter_by(email=userToEdit.email).first()
         if(user is not None or email is not None):
@@ -118,37 +128,49 @@ def userDash():
         
     return render_template("user_dash.html", user=user, register_form=register_form)
 
-@app.route('/edit_user', methods=['GET', 'POST'])
-@login_required
-def editUser():
-    id = current_user.id
-    register_form = UserForm()
-    userToEdit = User.query.get_or_404(id)
-    if(register_form.validate_on_submit()):
-        userToEdit.name = register_form.fname.data + ' ' + register_form.lname.data
-        userToEdit.username = register_form.username.data
-        userToEdit.email = register_form.email.data
-        userToEdit.password = register_form.password.data
-        # Check if the username exists in the database
-        user = User.query.filter_by(username=userToEdit.username).first()
-        email = User.query.filter_by(email=userToEdit.email).first()
-        if(user is not None or email is not None):
-            print("Change username or email")
-            # User exists, redirect to the login page
-            return redirect('/edit/user/<int:id>')
-        else:
-            print("User does not exist")
-            # User does not exist, create a new user
-            user = User(name=register_form.fname.data +' '+ register_form.lname.data, email=register_form.email.data, username = register_form.username.data, password=register_form.password.data)
-            # Add the new user to the database
-            db.session.add(user)
-        db.session.commit()
-        return redirect('/dashboard')
-    return render_template("edit_user.html", user=user, register_form=register_form)
-
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():
     logout_user()
     print("User logged out")
     return redirect('/login')
+
+
+@app.route('/addPost', methods=['GET', 'POST'])
+def add_post():
+    post_form = PostForm()
+    if(request.method == 'POST'):
+        # Get the data from the form
+        title = request.form['title']
+        # Extract post content and tags from the form
+        content = request.form['caption']
+        # Check if the title is not duplicate from the same user
+        post = Post.query.filter_by(title=title).first()
+        if(post is not None):
+            print("Post exists, change the title")
+            # Post exists, redirect to the login page
+            return redirect('/addPost')
+        # Find all tags - words that follow a '#'
+        tags = set(re.findall(r'#([A-Za-z0-9_]+)', content))
+        # Create or find Tag instances for each tag
+        tag_instances = []
+        for tag_name in tags:
+            tag = Tag.query.filter_by(name=tag_name).first()
+            if not tag:
+                tag = Tag(name=tag_name)
+                db.session.add(tag)
+            # No need to commit yet, it will happen after adding to post
+            tag_instances.append(tag)
+    
+        # Now, create a new Post instance
+        post = Post(title = title,caption=content, author_id=current_user.id)
+        db.session.add(post)
+    
+        # Add each tag to the post
+        for tag in tag_instances:
+            post.tags.append(tag)
+    
+        # Commit once to insert everything
+        db.session.commit()
+    print ("Hello")
+    return render_template("add_post.html",post_form = post_form)
