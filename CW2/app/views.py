@@ -216,3 +216,11 @@ def add_post():
         db.session.commit()
     print ("Hello")
     return render_template("add_post.html",post_form = post_form)
+
+
+
+@app.route('/explore', methods=['GET', 'POST'])
+@login_required
+def explore():
+    posts = Post.query.all()
+    return render_template("explore.html", posts = posts)

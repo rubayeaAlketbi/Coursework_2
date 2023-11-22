@@ -1,0 +1,20 @@
+{%extends "user_home.html"%}
+{%block content%}
+    <div class ="container-fluid">
+        <div class="container">
+            <h1 class="display-4">Welcome to the Explore Page</h1>
+        </div>
+        <div class="container">
+            <p class="lead">Here you find the posts from other users</p>
+            <div class="row d-flex justify-content-center align-items-center">
+            {%for post in posts%}
+                <div class="col-md-5">
+                    <div class="container normalContainer">
+                        <h4 class="fw-light">{{ post.title }}</h4>
+                    </div>
+                </div>
+            {%endfor%}
+        </div>
+    </div>
+
+{%endblock content%}
