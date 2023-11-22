@@ -1,6 +1,6 @@
 from app import app,db,login_manager
 from flask import render_template, flash, redirect,request
-from .forms import LoginForm, UserForm, PostForm
+from .forms import LoginForm, UserForm, PostForm,UpdateAccountForm
 from .models import User, Post, Tag, post_tag
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
@@ -127,6 +127,48 @@ def userDash():
             db.session.add(user)
         
     return render_template("user_dash.html", user=user, register_form=register_form)
+
+@app.route("/edit_account", methods=['GET', 'POST'])
+@login_required
+def edit_account():
+    
+    update_form = UpdateAccountForm()
+    current_user_data = User.query.get(current_user.id)
+  
+    if request.method == 'POST':
+        # Check if username or email fields have been filled and are unique
+        if update_form.username.data and User.query.filter(User.username == update_form.username.data, User.id != current_user.id).first():
+            flash("Username already in use. Please choose another one.", "error")
+            return redirect('/edit_account')
+        if update_form.email.data and User.query.filter(User.email == update_form.email.data, User.id != current_user.id).first():
+            flash("Email already in use. Please choose another one.", "error")
+            return redirect('/edit_account')
+        print("146")
+        # Update username and email if provided
+        if update_form.username.data:
+            current_user_data.username = update_form.username.data
+        if update_form.email.data:
+            current_user_data.email = update_form.email.data
+
+        # Update password if old password is correct and new password is provided
+        if update_form.old_password.data and update_form.password.data:
+            if check_password_hash(current_user_data.password, update_form.old_password.data):
+                current_user_data.password = generate_password_hash(update_form.password.data)
+            else:
+                flash("Old password is incorrect.", "error")
+                return redirect('/edit_account')
+
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect('/dashboard')
+
+    # Pre-populate the form with current user data
+    update_form.username.data = current_user_data.username
+    update_form.email.data = current_user_data.email
+    # Password fields are typically not pre-populated for security reasons
+
+    return render_template("edit_account.html", update_form=update_form, user=current_user_data)
+
 
 @app.route('/logout', methods=['GET'])
 @login_required

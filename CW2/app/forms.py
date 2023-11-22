@@ -36,3 +36,11 @@ class PostForm(FlaskForm):
     author = StringField('Author', validators=[DataRequired()])
     tags = StringField('Tags', validators=[DataRequired()])
     postButton = SubmitField('Post')
+    
+class UpdateAccountForm(FlaskForm):
+    username = StringField('Username')
+    email = StringField('Email Address')
+    old_password = PasswordField('Old Password')
+    password = PasswordField('New Password', validators=[Length(min=8,max=20),EqualTo('confirm',message='Passwords must match')])
+    confirm = PasswordField('Confirm Password')
+    update = SubmitField('Update')

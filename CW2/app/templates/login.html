@@ -1,11 +1,11 @@
 {%extends "home.html"%}
 {%block content%}
-<main class="container-fluid p-4 h-full Cryptonite">
+<main class="container-fluid p-4 h-full movingGrade">
     <div class = "container ">
         <div class ="row p-2 d-flex justify-content-center align-items-center h-100">
             <div class = "col-12 text-center">
                 <h1 class="fw-bold text-white">Welcome to the Login page</h1>
-                <p class="fs-4 fw-light text-white">Login to your account</p>
+                <p class="fs-4 fw-light text-white">Login to your Account</p>
             </div>
         <form method = "post" class="formContainer glassContainer" style="max-width:40rem; border-radius:10px;">
             {{login_form.hidden_tag()}}
@@ -17,7 +17,7 @@
                 {{login_form.password.label(class="form-label text-white")}}
                 {{login_form.password(class="form-control password")}}
             </div>
-            <button type="submit" class="btn btn-primary btn-lg m-1">Submit</button>
+            <button type="submit" class="btn btn-primary btn-lg m-1">Login</button>
         </form>
     </div>
 </main>

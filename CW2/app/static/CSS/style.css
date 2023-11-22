@@ -53,6 +53,7 @@
 }
 
 
+
 .imageResize{
     width: 600px; 
     height: 300px; 
@@ -91,10 +92,19 @@
     color:white;
 }
 
-.Cryptonite{
-    background: #159957; 
-    background: -webkit-linear-gradient(to right, #155799, #159957); 
-    background: linear-gradient(to right, #155799, #159957); 
+.normalContainer{
+    display: inline-flexbox;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    padding: 2rem;
+    border-radius: 2rem;
+    background-color: white;
+    max-width: 90%;
+    max-height: 60%;
+    -webkit-box-shadow: 9px 2px 83px -36px rgba(0,0,0,0.73);
+    -moz-box-shadow: 9px 2px 83px -36px rgba(0,0,0,0.73);
+    box-shadow: 9px 2px 83px -36px rgba(0,0,0,0.73);
 }
 
 .movingGrade{
