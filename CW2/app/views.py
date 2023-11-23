@@ -223,4 +223,15 @@ def add_post():
 @login_required
 def explore():
     posts = Post.query.all()
-    return render_template("explore.html", posts = posts)
+    # Store the users in a dictionary for easy lookup
+    userCache = {}
+    for post in posts:
+        if post.author_id in userCache:
+            authorName = userCache[post.author_id]
+        else:
+            #Fetch the author from the database
+            author = User.query.filter_by(id=post.author_id).first()
+            # Add the author to the cache
+            userCache[post.author_id] = author.name
+
+    return render_template("explore.html", posts = posts, userCache = userCache)

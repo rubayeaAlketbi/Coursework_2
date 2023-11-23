@@ -1,20 +1,53 @@
 {%extends "user_home.html"%}
 {%block content%}
-    <div class ="container-fluid">
+    <div class="container-fluid border-top h-full">
+        <!--Section title -->
         <div class="container">
-            <h1 class="display-4">Welcome to the Explore Page</h1>
+            <div class="row">
+                <h1 class="display-4 pt-4">Welcome to the Explore Page 🧭</h1>
+            </div>
+            <div class="row pb-3 m-3">
+                <p class="fs-3 fw-light">Here you find the posts from other users</p>
+            </div>
         </div>
-        <div class="container">
-            <p class="lead">Here you find the posts from other users</p>
-            <div class="row d-flex justify-content-center align-items-center">
+        <!-- All Posts-->
+        <div class="container-fluid rounded-1">
+            <div class="row d-flex justify-content-center align-items-center p-3 gap-3"> <!-- Increased gap size here -->
             {%for post in posts%}
-                <div class="col-md-5">
-                    <div class="container normalContainer">
-                        <h4 class="fw-light">{{ post.title }}</h4>
+                <div class="col-md-5 mb-4"> <!-- Added bottom margin here -->
+                    <div class="container growContainer normalContainer", id ="{{post.id}}">
+                        <div class ="row">
+                            <div class ="col-md-6">
+                                <h5 class="fw-light px-3">{{ userCache[post.author_id] }}</h5>
+                                <h5 class="fw-light px-3">{{ post.publish_date }}</h5>
+                            </div>
+                            <div class = "col-md-6">
+                                <h4 class="fw-bold text-center">{{ post.title }}</h4>
+                                <h3 class="fw-light text-center">{{ post.caption }}</h3>
+                            </div>
+                        </div>
                     </div>
                 </div>
             {%endfor%}
+            </div>
         </div>
     </div>
+    <br>
+    <br>
+    <br>
 
+    <nav class="navbar fixed-bottom glassContainer border-top">
+        <div class="d-flex justify-content-center align-items-center w-100">
+            <button type="button" class="btn btn-secondary m-1 btn-lg" id="SortAsc"> Sort Ascending</button>
+            <button type="button" class="btn btn-secondary m-1 btn-lg" id="SortDesc"> Sort Descending</button>
+            <button type="button" class="btn btn-secondary m-1 btn-lg" id="Randomize"> Randomize</button>
+        </div>
+    </nav>
+    
 {%endblock content%}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/posts.js') }}"></script>
+{% endblock scripts %}
+
+
