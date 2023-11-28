@@ -44,3 +44,7 @@ class UpdateAccountForm(FlaskForm):
     password = PasswordField('New Password', validators=[Length(min=8,max=20),EqualTo('confirm',message='Passwords must match')])
     confirm = PasswordField('Confirm Password')
     update = SubmitField('Update')
+    
+class CommentForm(FlaskForm):
+    text = StringField('Your Comment', validators=[DataRequired()], widget=TextArea())
+    commentButton = SubmitField('Comment')

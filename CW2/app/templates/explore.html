@@ -25,6 +25,15 @@
                                 <h4 class="fw-bold text-center">{{ post.title }}</h4>
                                 <h3 class="fw-light text-center">{{ post.caption }}</h3>
                             </div>
+                            <!-- The button of redirection to a seperate post-->
+                            <div class="col-md-5 mb-4">
+                                <div class="container growContainer normalContainer" id="{{ post.id }}">
+                                    <div class="text-center"> 
+                                        <a href="{{ url_for('post', post_id=post.id) }}" class="btn btn-primary">Read More</a> <!-- This is the new button -->
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>

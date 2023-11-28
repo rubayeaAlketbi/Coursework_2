@@ -1,8 +1,10 @@
-from app import app,db,login_manager
-from flask import render_template, flash, redirect,request
-from .forms import LoginForm, UserForm, PostForm,UpdateAccountForm
-from .models import User, Post, Tag, post_tag
+from app import app,db,login_manager,api
+from flask import render_template, flash, redirect,request,jsonify,url_for
+from datetime import datetime
+from .forms import LoginForm, UserForm, PostForm,UpdateAccountForm,CommentForm
+from .models import User, Post, Tag, post_tag, Comment
 from flask_login import login_user, logout_user, login_required, current_user
+from flask_restful import Resource, reqparse, fields, marshal_with
 from werkzeug.utils import secure_filename
 import uuid as uuid
 import os
@@ -235,3 +237,60 @@ def explore():
             userCache[post.author_id] = author.name
 
     return render_template("explore.html", posts = posts, userCache = userCache)
+
+
+
+@app.route('/post/<int:post_id>', methods=['GET', 'POST'])
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    post_author = User.query.filter_by(id=post.author_id).first()
+    comments = Comment.query.filter_by(post_id=post_id).all()
+    comment_form = CommentForm()
+    userCache = {user.id: user.name for user in User.query.all()}
+
+    if request.method == 'POST':
+        if request.is_json:  # This checks if it's an AJAX request
+            data = request.get_json()
+            comment_text = data.get('comment')
+
+            if comment_text:
+                new_comment = Comment(
+                    text=comment_text,
+                    post_id=post_id,
+                    author_id=current_user.id,
+                    publish_date=datetime.utcnow()
+                )
+                db.session.add(new_comment)
+                db.session.commit()
+
+                response_data = {
+                    'text': new_comment.text,
+                    'author_name': current_user.name,
+                    'publish_date': new_comment.publish_date.isoformat()
+                }
+
+                return jsonify(response_data), 201  # Return JSON for AJAX
+            else:
+                return jsonify({'error': 'Comment text is required'}), 400
+
+        # If not AJAX, it's a regular form submission, handle accordingly
+        if comment_form.validate_on_submit():
+            new_comment = Comment(
+                text=comment_form.text.data,
+                post_id=post_id,
+                author_id=current_user.id,
+                publish_date=datetime.utcnow()
+            )
+            db.session.add(new_comment)
+            db.session.commit()
+            return redirect(url_for('post', post_id=post_id))  # Redirect after form submission
+
+    # Regular GET request
+    return render_template(
+        "post_page.html",
+        post=post,
+        comments=comments,
+        comment_form=comment_form,
+        userCache=userCache,
+        post_author=post_author
+    )

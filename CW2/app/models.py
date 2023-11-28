@@ -61,3 +61,11 @@ post_tag = db.Table('post_tag',
     db.Column('post_id', db.Integer, db.ForeignKey('post.id'), primary_key=True),
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True)
 )
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    publish_date = db.Column(db.DateTime, default=datetime.utcnow())
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    
