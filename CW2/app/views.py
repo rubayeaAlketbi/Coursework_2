@@ -6,6 +6,7 @@ from .models import User, Post, Tag, post_tag, Comment
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_restful import Resource, reqparse, fields, marshal_with
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 import uuid as uuid
 import os
 import re
@@ -286,11 +287,13 @@ def post(post_id):
             return redirect(url_for('post', post_id=post_id))  # Redirect after form submission
 
     # Regular GET request
+    comments_with_authors = db.session.query(Comment, User.name).join(User, User.id == Comment.author_id).filter(Comment.post_id == post_id).all()
     return render_template(
         "post_page.html",
         post=post,
         comments=comments,
         comment_form=comment_form,
         userCache=userCache,
-        post_author=post_author
+        post_author=post_author,
+        comments_with_authors=comments_with_authors
     )

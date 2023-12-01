@@ -34,11 +34,10 @@
 .section-title{
     font-family: 'Courier New', Courier, monospace;
     font-weight:bolder;
-    color:var(--fire-engine-red);
 }
 .caption{
     font-weight:bold;
-    color:var(--fire-engine-red);
+    color:var(--lapis-lazuli);
 }
 
 .info-box {
@@ -113,9 +112,8 @@
     align-items: center;
     width:100%;
     height:100%;
-    background: #159957; 
-    background: -webkit-linear-gradient(to right, #155799, #159957); 
-    background: linear-gradient(to right, #155799, #159957);
+    background: rgb(34,193,195);
+    background: linear-gradient(90deg, rgba(34,193,195,1) 5%, rgb(253, 73, 45) 95%);
     background-size: 600% 600%;
     animation: animateBackground 10s infinite linear;
 }

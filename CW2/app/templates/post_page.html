@@ -1,76 +1,68 @@
 {% extends "user_home.html" %}
 {% block content %}
-<div class = "container-fluid movingGrade py-4">
+<div class = "container-fluid movingGrade py-4 border-black">
     <div class="container mb-4 normalContainer">
-        <div class="row p-3">
+        <div class="row p-3 border-right">
             <!-- Column for Name and Username -->
-            <div class="col-md-4 text-left">
+            <div class="col-md text-center">
+                <h3>@{{ post_author.username }}</h3>
                 <h2>{{ post_author.name }}</h2>
-                <h3>{{ post_author.username }}</h3>
+                <h5>{{ post.publish_date }}</h5>
             </div>
     
             <!-- Column for Title and Publish Date -->
-            <div class="col-md-8 text-right">
+            <div class="col-md text">
                 <div class="row">
-                    <div class="col-8 pb-2">
-                        <h1>{{ post.title }}</h1>
-                    </div>
-                    <div class="col-4">
-                        <h5>{{ post.publish_date }}</h5>
+                    <div class="col-12 pb-2">
+                        <h1 class="mb-3">Post Title: {{ post.title }}</h1>
+                        <h2 class="mb-3">Post Caption: {{ post.caption }}</h2>
                     </div>
                 </div>
             </div>
-        </div>
-    
-        <!-- Row for Caption -->
-        <div class="row">
-            <div class="col-12 text-center">
-                <h2>{{ post.caption }}</h2>
-            </div>
+
         </div>
     </div>
 </div>
 
-<div class="container-fluid h-full normalContainer my-3">
+<div class="container-fluid normalContainer my-3">
     <div class="container mb-4 ">
         <div class="row">
             <div class="col-12">
-                <h1 class="display-2 pr-2">🎙️Comments... </h1>
+                <h1 class="display-3 pr-1">🎙️Comments... </h1>
             </div>
         </div>
     </div>
     <div class="container mb-4">
         <div class="row">
             <div class="col-12">
-                {% for comment in comments %}
+                {% for comment, author_name in comments_with_authors %}
                 <div class="row p-3 border-bottom">
                     <div class="col-10">
-                        <h3><strong>{{ comment.author_id }}:</strong> {{ comment.text }}</h3>
+                        <!-- Display the author's name instead of the author_id -->
+                        <h3><strong>{{ author_name }}:</strong> {{ comment.text }}</h3>
                     </div>
                     <div class="col-2">
                         <p>{{ comment.publish_date.strftime('%Y-%m-%d %H:%M') }}</p>
                     </div>
                 </div>
-                    {% else %}
-                    <p>No comments yet.</p>
-                    {% endfor %}
+                {% else %}
+                <p>No comments yet.</p>
+                {% endfor %}
             </div>
         </div>
     </div>
-</div>
-
+    
 <div class="fixed-bottom p-3 bg-light">
     <div class="container">
-        <form id="comment_Form"  method="post">
-            {{comment_form.hidden_tag()}}
-            <div class="mb-3">
-                {{comment_form.text(class_="form-control", id="comment_Text", rows=1, placeholder="Write a comment...", required=True) }}
+        <form id="comment_Form" method="post" class="d-flex align-items-center">
+            {{ comment_form.hidden_tag() }}
+            <div class="flex-grow-1 mr-2"> <!-- Use Bootstrap's flex-grow-1 to make the input expand -->
+                {{ comment_form.text(class_="form-control", id="comment_Text", placeholder="Write a comment...", required=True) }}
             </div>
-            {{ comment_form.commentButton(id="commentSubmitButton", class_="btn btn-primary") }}
+            {{ comment_form.commentButton(id="commentSubmitButton", class_="btn btn-primary p-3") }}
         </form>
     </div>
 </div>
-
 
 <script = {{ url_for('static', filename='JS/comment.js') }}></script>
 <!-- Include jQuery from a CDN -->
