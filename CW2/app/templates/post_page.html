@@ -7,7 +7,7 @@
             <div class="col-md text-center">
                 <h3>@{{ post_author.username }}</h3>
                 <h2>{{ post_author.name }}</h2>
-                <h5>{{ post.publish_date }}</h5>
+                <h5>{{ post.publish_date.strftime('%d %B %Y') }}</h5>
             </div>
     
             <!-- Column for Title and Publish Date -->
@@ -52,17 +52,21 @@
         </div>
     </div>
     
-<div class="fixed-bottom p-3 bg-light">
-    <div class="container">
-        <form id="comment_Form" method="post" class="d-flex align-items-center">
-            {{ comment_form.hidden_tag() }}
-            <div class="flex-grow-1 mr-2"> <!-- Use Bootstrap's flex-grow-1 to make the input expand -->
-                {{ comment_form.text(class_="form-control", id="comment_Text", placeholder="Write a comment...", required=True) }}
-            </div>
-            {{ comment_form.commentButton(id="commentSubmitButton", class_="btn btn-primary p-3") }}
-        </form>
+    <div class="fixed-bottom p-3 bg-light">
+        <div class="container">
+            <form id="comment_Form" method="post" class="row g-2 align-items-center">
+                {{ comment_form.hidden_tag() }}
+                <div class="col"> <!-- Bootstrap column without flex-grow-1 -->
+                    {{ comment_form.text(class_="form-control", id="comment_Text", placeholder="Write a comment...", required=True) }}
+                </div>
+                <div class="col-auto"> <!-- Bootstrap column for auto width based on content -->
+                    {{ comment_form.commentButton(id="commentSubmitButton", class_="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+    
+    
 
 <script = {{ url_for('static', filename='JS/comment.js') }}></script>
 <!-- Include jQuery from a CDN -->

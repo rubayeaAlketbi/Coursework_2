@@ -2,19 +2,20 @@
 {%block content%}
     <div class="container-fluid border-top h-full">
         <!--Section title -->
-        <div class="container">
+        <div class="container-fluid border-bottom">
             <div class="row">
-                <h1 class="display-4 pt-4">Welcome to the Explore Page 🧭</h1>
+                <h1 class="display-3 pt-4 p-6  text-center">The Explore Page 🧭</h1>
             </div>
             <div class="row pb-3 m-3">
-                <p class="fs-3 fw-light">Here you find the posts from other users</p>
+                <p class="fs-3 fw-light  text-center">Here you find the posts from other users</p>
             </div>
         </div>
         <!-- All Posts-->
-        <div class="container-fluid rounded-1 movingGrade">
+        <div class="container-fluid rounded-1 border-left movingGrade d-grid", style="width:100%;">
+            <h1 class="display-3 pb-3 m-6 text-center text-white">Recent Posts</h1>
             <div class="row d-flex justify-content-center align-items-center p-3 gap-3">
                 {% for post in posts %}
-                <div class="col-md-5 mb-4">
+                <div class="col-md-3">
                     <div class="container growContainer normalContainer" id="{{ post.id }}">
                         <div class="row">
                             <div class="col-md-6">
@@ -35,18 +36,13 @@
                 {% endfor %}
             </div>
         </div>
-        
-    <br>
-    <br>
-    <br>
-
-    <nav class="navbar fixed-bottom glassContainer border-top">
+    </div>    
+    <nav class="navbar border-top border-bottom">
         <div class="d-flex justify-content-center align-items-center w-100">
-            <button type="button" class="btn btn-secondary m-1 btn-lg" id="SortAsc"> Sort Ascending</button>
-            <button type="button" class="btn btn-secondary m-1 btn-lg" id="SortDesc"> Sort Descending</button>
-            <button type="button" class="btn btn-secondary m-1 btn-lg" id="Randomize"> Randomize</button>
+            <h3 class="fw-light"> You've reached the end of the Page 😐 </h3>
         </div>
     </nav>
+
     
 {%endblock content%}
 
