@@ -3,7 +3,7 @@ $(document).ready(function() {
         e.preventDefault(); // Prevent the default form submission
 
         var commentText = $('#commentText').val();
-        var csrfToken = $('input[name="csrf_token"]').val(); // Fetch the CSRF token
+        var csrfToken = $('input[name="csrf_token"]').val();
 
         $.ajax({
             url: '/post/' + post_id, // Ensure this is the correct endpoint

@@ -60,6 +60,18 @@ def register():
     return render_template("register.html",register_form = register_form)
 
 
+@app.route('/register/validate-username', methods=['POST'])
+def validate_username():
+    data = request.get_json()  # Use this instead of request.form
+    username = data['username']
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'error': 'Username already exists'})
+    
+    
+
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))

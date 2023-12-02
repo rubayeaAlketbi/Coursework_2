@@ -1,7 +1,17 @@
 {%extends "user_home.html"%}
 {%block content%}
-<div class="container-fluid h-full m-aut0 py-4 movingGrade">
-    <div class="container normalContainer">
+
+
+<div class="container-fluid h-full m-aut0 py-4 neoBackground ">
+    <section class="container-sm my-auto ">
+        <div class="row d-flex flex-column flex-sm-row m-auto align-items-center">
+            <div class="col col-md-12 col-sm-12 my-4">
+                <h1 class="fs-2 fw-bold pl-1">Welcome to your Account Page {{user.name}} ✨ !</h1>
+                <p class="fs-4 fw-light"> You can view your account and update your detials💨.</p>
+            </div>
+        </div>
+    </section>
+    <div class="container movingGrade">
         <div class="row d-flex flex-row p-4 align-items-center">
             <div class="col-md-5 justify-content-start">
                 <div class="row">
