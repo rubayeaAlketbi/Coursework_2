@@ -1,63 +1,12 @@
-{%extends "user_home.html"%}
-{%block content%}
-
-
-<div class="container-fluid h-full m-aut0 py-4 neoBackground ">
-    <section class="container-sm my-auto ">
-        <div class="row d-flex flex-column flex-sm-row m-auto align-items-center">
-            <div class="col col-md-12 col-sm-12 my-4">
-                <h1 class="fs-2 fw-bold pl-1">Welcome to your Account Page {{user.name}} ✨ !</h1>
-                <p class="fs-4 fw-light"> You can view your account and update your detials💨.</p>
-            </div>
-        </div>
+{% extends "user_home.html" %}
+{% block content %}
+<div class="h-full">
+<div class="container-fluid border-top py-4">
+    <section class="container-sm my-auto text-center">
+        <h1 class="display-4 fw-bold">{{ user.name }}'s DashBoard' ✨!</h1>
+        <p class="display-6 fw-light">You can Edit your Account details.</p>
     </section>
-    <div class="container movingGrade">
-        <div class="row d-flex flex-row p-4 align-items-center">
-            <div class="col-md-5 justify-content-start">
-                <div class="row">
-                    <div class="col-md-12">
-                        {%if not user.avatar%}
-                        <img src="{{url_for('static', filename='img/user.png')}}" style="max-width:65%; max-height:auto; object-fill:contain; padding:0.5rem">
-                        {%else%}
-                        {{user.avatar(class="img-fluid rounded-circle")}}
-                        {%endif%}
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-7 text-start">
-                <div class="row d-flex flex-row p-4 align-items-center">
-                    <div class="col-md-12">
-                        <div class="info-box pr-4">
-                            <h1>Total Posts</h1>
-                            <h2>0</h2>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="info-box ">
-                            <h1>Recent Posts</h1>
-                            <h2>0</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        <div class="row d-flex flex-row p-4 align-items-center">
-            <div class="col-md-12">
-                <ul class="user-info m-auto p-6 ">
-                    <li class= "fs-1 fw-light pb-3">{{user.username}}</span></li>
-                    <h1 class= "fs-1 fw-light pb-3"> {{user.name}}</h1>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row d-flex flex-row p-4 align-items-center">
-            <div class="col-md-6">
-                <a href="{{url_for('edit_account')}}" class="btn btn-primary">Edit Profile</a>
-            </div>
-        </div>
-    </div>
 </div>
+    
 
-{%endblock content%}
+{% endblock content %}

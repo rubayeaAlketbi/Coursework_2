@@ -92,7 +92,7 @@ def login():
             if(user.username == 'admin'):
                 return redirect('/admin')
             else:
-                return redirect('/dashboard')
+                return redirect('/explore')
         else:
             return redirect('/login')
     return render_template("login.html",login_form = login_form)
@@ -132,7 +132,7 @@ def userDash():
         if(user is not None or email is not None):
             # If the user exists, then ask to change username or email
             print("Change username or email")
-            return redirect('/dashboard')
+            return redirect('/explore')
         # If the email and username is unique then update the user
         else:
             print("User does not exist")
@@ -229,6 +229,7 @@ def add_post():
     
         # Commit once to insert everything
         db.session.commit()
+        flash('Your post has been created! , Check it out in the explore page')
     print ("Hello")
     return render_template("add_post.html",post_form = post_form)
 
