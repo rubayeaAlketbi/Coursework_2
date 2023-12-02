@@ -229,7 +229,7 @@ def add_post():
     
         # Commit once to insert everything
         db.session.commit()
-        flash('Your post has been created! , Check it out in the explore page')
+        flash('Your post has been created! , Check it out in the explore page ')
     print ("Hello")
     return render_template("add_post.html",post_form = post_form)
 
