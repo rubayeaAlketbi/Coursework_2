@@ -148,3 +148,13 @@ backdrop-filter: blur( 3px );
 -webkit-backdrop-filter: blur( 3px );
 border-radius: 10px;
 }
+
+.movingGradeient{
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+    background-size: 600% 600%;
+    animation: animateBackground 10s infinite linear;
+}

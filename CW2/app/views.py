@@ -101,47 +101,60 @@ def login():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def userDash():
-    register_form = UserForm()
     user = User.query.filter_by(username=current_user.username).first()
-    id = current_user.id
-    userToEdit = User.query.get_or_404(id)
-    if(request.method == 'POST'):
-        userToEdit.name = register_form.fname.data + ' ' + register_form.lname.data
-        userToEdit.username = request.form['username']
-        userToEdit.email = request.form['email']
-        userToEdit.password = request.form['password']
-       
-        if 'avatar' in request.files:
-            file = request.files['avatar']
-            if file and file.filename:
-                # Secure the filename
-                profilePicture = secure_filename(file.filename)
-                # Generate a unique name for the profile picture
-                profileName = str(uuid.uuid1()) + "_" + profilePicture
-                # Save the file in the desired folder
-                file.save(os.path.join('path_to_save', profileName))
-                # Update the user's avatar field with the new file name
-                userToEdit.avatar = profileName
-            else:
-                # Handle case for no file uploaded
-                print("No file uploaded")
-        else:
-            print("No file part in request")
-        user = User.query.filter_by(username=userToEdit.username).first()
-        email = User.query.filter_by(email=userToEdit.email).first()
-        if(user is not None or email is not None):
-            # If the user exists, then ask to change username or email
-            print("Change username or email")
-            return redirect('/explore')
-        # If the email and username is unique then update the user
-        else:
-            print("User does not exist")
-            #
-            user = User(name=register_form.fname.data +' '+ register_form.lname.data, email=register_form.email.data, username = register_form.username.data, password=register_form.password.data)
-            # Add the new user to the database
-            db.session.add(user)
-        
-    return render_template("user_dash.html", user=user, register_form=register_form)
+    register_form = UserForm(obj=user)  # Populate form with user data
+
+    if register_form.validate_on_submit():
+        # Check if username is changed and not unique
+        if (register_form.username.data != user.username and
+            User.query.filter(User.username == register_form.username.data).first()):
+            flash("Username already in use. Please choose another one.", "error")
+            return redirect(url_for('userDash'))
+
+        # Check if email is changed and not unique
+        if (register_form.email.data != user.email and
+            User.query.filter(User.email == register_form.email.data).first()):
+            flash("Email already in use. Please choose another one.", "error")
+            return redirect(url_for('userDash'))
+
+        # Update user information
+        user.name = register_form.fname.data + ' ' + register_form.lname.data
+        user.username = register_form.username.data
+        user.email = register_form.email.data
+
+        # Update password only if provided
+        if register_form.password.data:
+            hashed_password = generate_password_hash(register_form.password.data).decode('utf-8')
+            user.password = hashed_password
+
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('userDash'))
+    
+    #Display the number of posts and comments of the user 
+    posts = Post.query.filter_by(author_id=current_user.id).all()
+    comments = Comment.query.filter_by(author_id=current_user.id).all()
+    post_count = len(posts)
+    comment_count = len(comments)
+    
+    #Display the number of tags used by the user
+    tags = Tag.query.all()
+    tag_count = 0
+    for tag in tags:
+        for post in posts:
+            if tag in post.tags:
+                tag_count += 1
+                
+    #Display the latest posts of the user
+    for post in posts:
+        latest_posts = Post.query.filter_by(author_id=current_user.id).order_by(Post.publish_date.desc()).limit(5).all()
+    
+    
+
+    return render_template("user_dash.html", user=user, register_form=register_form,
+                           post_count=post_count, comment_count=comment_count, tag_count=tag_count,
+                           latest_posts=latest_posts)
+
 
 @app.route("/edit_account", methods=['GET', 'POST'])
 @login_required
