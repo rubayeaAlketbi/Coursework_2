@@ -1,4 +1,4 @@
-{% extends "user_home.html" %}
+{% extends "home.html" %}
 {% block content %}
 
 {% for message in get_flashed_messages() %}
@@ -32,4 +32,13 @@
     </div>
     </div>
 </div>
+
+<footer class="navbar banner border-top">
+    <div class="container d-flex justify-content-center align-items-center p-3">
+        <a href="{{ url_for('my_page') }}" class="text-white btn btn-primary btn-lg mx-2">My Page</a>
+        <a href="{{ url_for('explore') }}" class="text-white btn btn-primary btn-lg mx-2">Explore</a>
+    </div>
+</footer>
+
+
 {% endblock content%}

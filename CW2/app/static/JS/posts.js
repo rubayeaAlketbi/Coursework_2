@@ -10,4 +10,3 @@ document.addEventListener('DOMContentLoaded', (event) => {
         container.appendChild(container.children[Math.random() * i | 0]);
     }
 });
-

@@ -1,4 +1,4 @@
-{% extends "user_home.html" %}
+{% extends "home.html" %}
 {% block content %}
 
 {% for message in get_flashed_messages() %}
@@ -11,35 +11,10 @@
 
     <div class="container-fluid border-top border-bottom py-4">
         <section class="container-sm my-auto text-center">
-            <h1 class="display-4 fw-bold">{{ user.name }}'s DashBoard✨</h1>
-            <p class="display-6 fw-light">Customize and View your Activity</p>
+            <h1 class="display-5 fw-bold">{{ user.name }}'s Setting✨</h1>
         </section>
     </div>
 
-    <div class="container-fluid rounded-1 border-left d-grid ovingGradient ", style="width:100%; padding:1rem;">
-        <h1 class="display-3 fw-bold p-3 m-6 text-center ">Latest Posts ...</h1>
-        <div class="row d-flex justify-content-center align-items-center p-3 gap-3 m">
-            {% for post in latest_posts %}
-            <div class="col-md-3 growContainer">
-                <a href="{{ url_for('post', post_id=post.id) }}" style="text-decoration:none; color:black;">
-                <div class="container normalContainer" id="{{ post.id }}">
-                    <div class="row">
-                        <div class="col-md-4 border-end">
-                            <h5 class="fw-light px-3">{{ post.publish_date.strftime('%Y-%m-%d %H:%M') }}</h5>
-                        </div>
-                        <div class="col-md-8 py-2">
-                            <h4 class="fw-bold text-center">{{ post.title }}</h4>
-                            <h3 class="fw-light text-center">{{ post.caption }}</h3>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    
     <div class="container-fluid border-top p-4 movingGradeient">
         <div class ="row d-flex">
             <div class="col-md-4">
@@ -126,14 +101,11 @@
             </div>
         </div>
     </div>
-
-
-    <nav class="navbar border-top border-bottom">
-        <div class="d-flex justify-content-center align-items-center w-100">
-            <h3 class="fw-light"> You've reached the end of the Page 😐 </h3>
-        </div>
-    </nav>
-
 </div>
+<nav class="navbar border-top sticky-bottom">
+    <div class="d-flex justify-content-center align-items-center w-100">
+        <h3 class="fw-light"> You've reached the end of the Page 😐 </h3>
+    </div>
+</nav>
 
 {% endblock content %}

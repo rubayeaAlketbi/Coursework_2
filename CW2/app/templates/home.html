@@ -13,6 +13,7 @@
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&family=Josefin+Slab&display=swap" rel="stylesheet">
       <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
+      <link rel="stylesheet" type="text.css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css" />
     <title>Guest Page</title>
 </head>
 <body>
@@ -25,12 +26,36 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav ms-auto d-flex gap-2 fs-4 fw-bold">
+            {% if current_user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link title" href="{{url_for("explore")}}">Explore</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link title" href="{{url_for("add_post")}}">Add Post</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link title" href="{{url_for("my_page")}}">My Page</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link title" href="{{url_for("userDash")}}">Settings</a>
+              </li>
+              {%if current_user.id == 1%}
+              <li class="nav-item fs-4 ">
+                <a class="nav-link title "href="{{url_for("admin")}}">Admin</a>
+              </li>
+              {%endif%}
+              <li class="nav-item fs-4 ">
+                <a class="nav-link title "href="{{url_for("logout")}}">Logout</a>
+              </li>
+            {% else %}
               <li class="nav-item">
                 <a class="nav-link title" href="{{url_for("login")}}">Login</a>
               </li>
               <li class="nav-item fs-4 ">
                 <a class="nav-link title "href="{{url_for("register")}}">Sign Up</a>
               </li>
+            {% endif %}
+
             </ul>
           </div>
         </div>

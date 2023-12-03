@@ -1,4 +1,4 @@
-{%extends "user_home.html"%}
+{%extends "home.html"%}
 {%block content%}
     <div class="container-fluid border-top h-full">
         <!--Section title -->
@@ -15,7 +15,7 @@
             <h1 class="display-3 fw-bold p-3 m-6 text-center text-white">Spotlights ...</h1>
             <div class="row d-flex justify-content-center align-items-center p-3 gap-3">
                 {% for post in posts %}
-                <div class="col-md-3 growContainer">
+                <div class="col-md-11 growContainer">
                     <a href="{{ url_for('post', post_id=post.id) }}" style="text-decoration:none; color:black;">
                     <div class="container normalContainer" id="{{ post.id }}">
                         <div class="row">
@@ -33,15 +33,34 @@
                 </div>
                 {% endfor %}
             </div>
+
+            <nav aria-label="Page navigation py-3">
+                <ul class="pagination justify-content-center pagination-lg">
+                    <li class="page-item {% if not paginationPost.has_prev %}disabled{% endif %}">
+                        <a class="page-link" href="{% if paginationPost.has_prev %}{{ url_for('explore', page=paginationPost.prev_num) }}{% else %}#{% endif %}">Previous</a>
+                    </li>
+                    {% for page_num in paginationPost.iter_pages() %}
+                        {% if paginationPost.page == page_num %}
+                            <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                        {% else %}
+                            <li class="page-item"><a href="{{ url_for('explore', page=page_num) }}" class="page-link">{{ page_num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+  
+                    <li class="page-item {% if not paginationPost.has_next %}disabled{% endif %}">
+                        <a class="page-link" href="{% if paginationPost.has_next %}{{ url_for('explore', page=paginationPost.next_num) }}{% else %}#{% endif %}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+
         </div>
-    </div>    
+    </div>  
+
     <nav class="navbar border-top border-bottom">
         <div class="d-flex justify-content-center align-items-center w-100">
-            <h3 class="fw-light"> You've reached the end of the Page 😐 </h3>
+            <h3 class="fw-light"> Share your ideas 💡</h3>
         </div>
     </nav>
-
-    
 {%endblock content%}
 
 {% block scripts %}

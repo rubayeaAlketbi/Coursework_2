@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid as uuid
 import os
+from sqlalchemy import func
 import re
 
 
@@ -22,14 +23,6 @@ def home():
 def register():
     register_form = UserForm()
     if(register_form.validate_on_submit()):
-        # print("First Name: " + register_form.fname.data)
-        # print("Last Name: " + register_form.lname.data)
-        # print("Email: " + register_form.email.data)
-        # if(register_form.password.data != register_form.confirm.data):
-        #     print("Passwords do not match")
-        # print("Password: " + register_form.password.data)
-        # print("Confirm Password: " + register_form.confirm.data)
-        # Get the data from the form and create a new user
         fname = register_form.fname.data
         lname = register_form.lname.data
         username = register_form.username.data
@@ -129,7 +122,7 @@ def userDash():
 
         db.session.commit()
         flash('Your account has been updated!', 'success')
-        return redirect(url_for('userDash'))
+        return redirect(url_for('explore'))
     
     #Display the number of posts and comments of the user 
     posts = Post.query.filter_by(author_id=current_user.id).all()
@@ -145,16 +138,9 @@ def userDash():
             if tag in post.tags:
                 tag_count += 1
                 
-    #Display the latest posts of the user
-    for post in posts:
-        latest_posts = Post.query.filter_by(author_id=current_user.id).order_by(Post.publish_date.desc()).limit(5).all()
-    
-    
 
     return render_template("user_dash.html", user=user, register_form=register_form,
-                           post_count=post_count, comment_count=comment_count, tag_count=tag_count,
-                           latest_posts=latest_posts)
-
+                           post_count=post_count, comment_count=comment_count, tag_count=tag_count)
 
 @app.route("/edit_account", methods=['GET', 'POST'])
 @login_required
@@ -198,6 +184,28 @@ def edit_account():
     return render_template("edit_account.html", update_form=update_form, user=current_user_data)
 
 
+@app.route('/my_page', methods=['GET', 'POST'])
+@login_required
+def my_page():
+    user = User.query.filter_by(username=current_user.username).first()
+    posts = Post.query.filter_by(author_id=current_user.id).all()
+    latest_posts = []  # Initialize the variable before the loop
+    for _ in posts:
+        latest_posts = Post.query.filter_by(author_id=current_user.id).order_by(Post.publish_date.desc()).limit(5).all()
+    # Return all of the posts of the user except the post with the highest number of comments and the latest posts
+    top_three_posts = Post.query \
+    .outerjoin(Comment, Post.id == Comment.post_id) \
+    .with_entities(Post, func.count(Comment.id).label('comment_count')) \
+    .group_by(Post.id) \
+    .order_by(func.count(Comment.id).desc()) \
+    .limit(3) \
+    .all()
+    return render_template("my_page.html",user=user, posts = posts, latest_posts = latest_posts, remaining_posts = top_three_posts)
+
+
+
+
+    
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():
@@ -251,10 +259,13 @@ def add_post():
 @app.route('/explore', methods=['GET', 'POST'])
 @login_required
 def explore():
-    posts = Post.query.all()
     # Store the users in a dictionary for easy lookup
     userCache = {}
-    for post in posts:
+    # get the page number from the request 
+    page = request.args.get('page', 1, type=int)
+    # Paginate the posts
+    posts = Post.query.order_by(Post.publish_date.desc()).paginate(page=page, per_page=4)
+    for post in posts.items:
         if post.author_id in userCache:
             authorName = userCache[post.author_id]
         else:
@@ -263,7 +274,7 @@ def explore():
             # Add the author to the cache
             userCache[post.author_id] = author.name
 
-    return render_template("explore.html", posts = posts, userCache = userCache)
+    return render_template("explore.html", posts = posts.items , userCache = userCache, paginationPost = posts)
 
 
 
@@ -323,3 +334,9 @@ def post(post_id):
         post_author=post_author,
         comments_with_authors=comments_with_authors
     )
+
+@app.route('/admin', methods=['GET', 'POST'])
+@login_required
+def admin():
+    posts = Post.query.all()
+    return render_template("admin_dash.html", posts = posts)
