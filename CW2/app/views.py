@@ -169,30 +169,6 @@ def userDash():
     print(request.form)
     return render_template("user_dash.html", user=user, register_form=register_form,delete_form=delete_form,password_form=password_form)
 
-
-# @app.route("/change_password", methods=['GET', 'POST'])
-# @login_required
-# def change_password():
-#     change_form = ChangePasswordForm()
-#     current_user_data = User.query.get(current_user.id)
-#     if request.method == 'POST':
-#         # Check if old password is correct
-#         if not current_user_data.verify_password(change_form.old_password.data):
-#             flash("Old password is incorrect.", "error")
-#             return redirect('/change_password')
-#         # Check if new password is different from old password
-#         if change_form.old_password.data == change_form.password.data:
-#             flash("New password must be different from old password.", "error")
-#             return redirect('/change_password')
-#         # Update password
-#         hashed_password = generate_password_hash(change_form.password.data).decode('utf-8')
-#         current_user_data.password = hashed_password
-#         db.session.commit()
-#         flash('Your password has been updated!', 'success')
-#         return redirect('/dashboard')
-#     return render_template("change_password.html", change_form=change_form, user=current_user_data)
-
-
 @app.route('/my_page', methods=['GET', 'POST'])
 @login_required
 def my_page():
