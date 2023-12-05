@@ -1,7 +1,7 @@
 from app import app,db,login_manager,api
 from flask import render_template, flash, redirect,request,jsonify,url_for
 from datetime import datetime
-from .forms import LoginForm, UserForm, PostForm,UpdateAccountForm,CommentForm
+from .forms import LoginForm, UserForm, PostForm,UpdateAccountForm,CommentForm,ChangePasswordForm,deleteAccountForm
 from .models import User, Post, Tag, post_tag, Comment
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_restful import Resource, reqparse, fields, marshal_with
@@ -95,9 +95,10 @@ def login():
 @login_required
 def userDash():
     user = User.query.filter_by(username=current_user.username).first()
-    register_form = UserForm(obj=user)  # Populate form with user data
-
-    if register_form.validate_on_submit():
+    register_form = UpdateAccountForm()
+    password_form = ChangePasswordForm()
+    delete_form = deleteAccountForm()
+    if 'update' in request.form :
         # Check if username is changed and not unique
         if (register_form.username.data != user.username and
             User.query.filter(User.username == register_form.username.data).first()):
@@ -110,78 +111,86 @@ def userDash():
             flash("Email already in use. Please choose another one.", "error")
             return redirect(url_for('userDash'))
 
-        # Update user information
-        user.name = register_form.fname.data + ' ' + register_form.lname.data
+        # Check if the name is changed
+        if register_form.name.data:
+            user.name = register_form.name.data
+        
+        user.name = register_form.name.data
         user.username = register_form.username.data
         user.email = register_form.email.data
 
-        # Update password only if provided
-        if register_form.password.data:
-            hashed_password = generate_password_hash(register_form.password.data).decode('utf-8')
-            user.password = hashed_password
-
         db.session.commit()
         flash('Your account has been updated!', 'success')
-        return redirect(url_for('explore'))
+        return redirect(url_for('userDash'))
     
-    #Display the number of posts and comments of the user 
-    posts = Post.query.filter_by(author_id=current_user.id).all()
-    comments = Comment.query.filter_by(author_id=current_user.id).all()
-    post_count = len(posts)
-    comment_count = len(comments)
-    
-    #Display the number of tags used by the user
-    tags = Tag.query.all()
-    tag_count = 0
-    for tag in tags:
-        for post in posts:
-            if tag in post.tags:
-                tag_count += 1
+    elif 'delete' in request.form:
+        print("Delete")
+        if  'delete' in request.form:
+            if check_password_hash(current_user.passwordHashed, delete_form.confirm_password.data):
+                #Delete the comments of the user
+                comments = Comment.query.filter_by(author_id=current_user.id).all()
+                for comment in comments:
+                    db.session.delete(comment)
+                    db.session.commit()
+                #Delete the posts of the user
+                posts = Post.query.filter_by(author_id=current_user.id).all()
+                for post in posts:
+                    db.session.delete(post)
+                    db.session.commit()
                 
-
-    return render_template("user_dash.html", user=user, register_form=register_form,
-                           post_count=post_count, comment_count=comment_count, tag_count=tag_count)
-
-@app.route("/edit_account", methods=['GET', 'POST'])
-@login_required
-def edit_account():
-    
-    update_form = UpdateAccountForm()
-    current_user_data = User.query.get(current_user.id)
-  
-    if request.method == 'POST':
-        # Check if username or email fields have been filled and are unique
-        if update_form.username.data and User.query.filter(User.username == update_form.username.data, User.id != current_user.id).first():
-            flash("Username already in use. Please choose another one.", "error")
-            return redirect('/edit_account')
-        if update_form.email.data and User.query.filter(User.email == update_form.email.data, User.id != current_user.id).first():
-            flash("Email already in use. Please choose another one.", "error")
-            return redirect('/edit_account')
-        print("146")
-        # Update username and email if provided
-        if update_form.username.data:
-            current_user_data.username = update_form.username.data
-        if update_form.email.data:
-            current_user_data.email = update_form.email.data
-
-        # Update password if old password is correct and new password is provided
-        if update_form.old_password.data and update_form.password.data:
-            if check_password_hash(current_user_data.password, update_form.old_password.data):
-                current_user_data.password = generate_password_hash(update_form.password.data)
+                # Delete the user   
+                db.session.delete(user)
+                db.session.commit()
+                flash('Your account has been deleted!', 'success')
+                return redirect('/login')
             else:
-                flash("Old password is incorrect.", "error")
-                return redirect('/edit_account')
+                flash("Password is incorrect.", "error")
+                return redirect('/dashboard')
+    elif 'change' in request.form:
+        # Check if old password is correct
+        if not check_password_hash(current_user.passwordHashed, password_form.old_password.data):
+            flash('Old password is incorrect.', 'danger')
+            return redirect(url_for('userDash'))
 
+        # Ensure new password is different from the old password
+        if password_form.old_password.data == password_form.password.data:
+            flash('New password must be different from the old password.', 'danger')
+            return redirect(url_for('userDash'))
+
+        # Update the user's password
+        hashed_password = generate_password_hash(password_form.password.data)
+        current_user.passwordHashed = hashed_password  # Use the correct attribute name
         db.session.commit()
-        flash('Your account has been updated!', 'success')
-        return redirect('/dashboard')
 
-    # Pre-populate the form with current user data
-    update_form.username.data = current_user_data.username
-    update_form.email.data = current_user_data.email
-    # Password fields are typically not pre-populated for security reasons
+        flash('Your password has been updated!', 'success')
+        return redirect(url_for('userDash'))
 
-    return render_template("edit_account.html", update_form=update_form, user=current_user_data)
+
+    print(request.form)
+    return render_template("user_dash.html", user=user, register_form=register_form,delete_form=delete_form,password_form=password_form)
+
+
+# @app.route("/change_password", methods=['GET', 'POST'])
+# @login_required
+# def change_password():
+#     change_form = ChangePasswordForm()
+#     current_user_data = User.query.get(current_user.id)
+#     if request.method == 'POST':
+#         # Check if old password is correct
+#         if not current_user_data.verify_password(change_form.old_password.data):
+#             flash("Old password is incorrect.", "error")
+#             return redirect('/change_password')
+#         # Check if new password is different from old password
+#         if change_form.old_password.data == change_form.password.data:
+#             flash("New password must be different from old password.", "error")
+#             return redirect('/change_password')
+#         # Update password
+#         hashed_password = generate_password_hash(change_form.password.data).decode('utf-8')
+#         current_user_data.password = hashed_password
+#         db.session.commit()
+#         flash('Your password has been updated!', 'success')
+#         return redirect('/dashboard')
+#     return render_template("change_password.html", change_form=change_form, user=current_user_data)
 
 
 @app.route('/my_page', methods=['GET', 'POST'])
@@ -200,7 +209,22 @@ def my_page():
     .order_by(func.count(Comment.id).desc()) \
     .limit(3) \
     .all()
-    return render_template("my_page.html",user=user, posts = posts, latest_posts = latest_posts, remaining_posts = top_three_posts)
+    
+     #Display the number of posts and comments of the user 
+    posts = Post.query.filter_by(author_id=current_user.id).all()
+    comments = Comment.query.filter_by(author_id=current_user.id).all()
+    post_count = len(posts)
+    comment_count = len(comments)
+    
+    #Display the number of tags used by the user
+    tags = Tag.query.all()
+    tag_count = 0
+    for tag in tags:
+        for post in posts:
+            if tag in post.tags:
+                tag_count += 1
+                
+    return render_template("my_page.html",user=user, posts = posts, latest_posts = latest_posts, remaining_posts = top_three_posts,tag_count=tag_count,post_count=post_count,comment_count=comment_count)
 
 
 

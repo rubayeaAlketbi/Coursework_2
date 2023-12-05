@@ -11,13 +11,20 @@
 
     <div class="container-fluid border-top border-bottom py-4">
         <section class="container-sm my-auto text-center">
-            <h1 class="display-5 fw-bold">{{ user.name }}'s Setting✨</h1>
+            <h1 class="display-5 fw-bold">Account Setting✨</h1>
         </section>
     </div>
 
     <div class="container-fluid border-top p-4 movingGradeient">
-        <div class ="row d-flex">
-            <div class="col-md-4">
+        <div class="container border-all">
+            <div class="row d-flex justify-content-center border-bottom">
+                <div class="col-md-12">
+                    <h1 class="display-5 fw-bold text-white">{{user.username}} Setting ⚙️</h1>
+                    <p class="fs-4 text-white">You can edit the setting just by clicking on the panel</p>
+                </div>
+            </div>
+        <div class ="row d-flex py-3">
+            <div class="col-md-5">
                 <div class = "container border glassContainer mb-4">
                     <div class ="row d-block">
                         <div class = "col-md-12 py-3">
@@ -30,41 +37,36 @@
                     </div>
                 </div>
 
-                <div class = "container border glassContainer my-4 text-center">
+                <div class = "container border bg-info rounded-3 my-4 text-center">
                     <div class ="row d-block">
                         <div class = "col-md-12 py-2">
-                            <h3 class="fs-1 fw-bold text-white">Total Posts 🧪</h3>
-                            <h1 class="fs-1 fw-light text-white">{{post_count}} Threads</h1>
+                            <h3 class="fs-1 fw-bold text-white">Change Password🔐</h3>
+                            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#changeModal">
+                                Change Password
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <div class = "container border glassContainer my-4 text-center">
+                <div class = "container border glassContainer bg-danger my-4 text-center">
                     <div class ="row d-block">
                         <div class = "col-md-12 py-2">
-                            <h3 class="fs-1 fw-bold text-white">Total Comments 💬</h3>
-                            <h1 class="fs-1 fw-light text-white">{{comment_count}} Comments</h1>
-                        </div>
-                    </div>
-                </div>
-
-                <div class = "container border glassContainer my-4 text-center">
-                    <div class ="row d-block">
-                        <div class = "col-md-12 py-2">
-                            <h3 class="fs-1 fw-bold text-white">Total Tags 💬</h3>
-                            <h1 class="fs-1 fw-light text-white">{{tag_count}} Tags</h1>
+                            <h3 class="fs-1 fw-bold text-white">Delete Account ⚠️</h3>
+                            <button type="button" class="btn btn-warning btn-lg" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                               Remove Account
+                              </button>
                         </div>
                     </div>
                 </div>
 
             </div>
-            <div class="col-md-8">
-                <div class="container glassContainer">
+            <div class="col-md-7">
+                <div class="container glassContainer py-1 pb-2">
                     <div class ="row d-block">
                         <div class = "col-md-12 py-2 p-3 d-block justify-contents-center my-3 p-5">
-                            <h3 class="fs-1 fw-bold text-white">Edit Your Account Info : </h3>
+                            <h3 class="fs-1 fw-bold text-white">Update Your Account Info : </h3>
                             <!-- Account Details Here -->
-                            <form action="/edit_account" method="POST" class="">
+                            <form action="{{url_for('userDash')}}" method="POST" class="">
                                 {{ register_form.hidden_tag() }}
                                 <div class="mb-3 input-group my-3">
                                     <span class="input-group-text my-3"><i class="fa fa-user"></i></span>
@@ -81,18 +83,8 @@
                                     <input type="email" class="form-control fs-4 my-3" id="email" name="email" placeholder="Email Address" value="{{ user.email }}">
                                     <label for="email" class="form-label fs-3 text-white visually-hidden">Email Address</label>
                                 </div>
-                                <div class="mb-3 input-group">
-                                    <span class="input-group-text my-3"><i class="fa fa-lock"></i></span>
-                                    <input type="password" class="form-control fs-4 my-3" id="password" name="password" placeholder="New Password">
-                                    <label for="password" class="form-label fs-3 text-white visually-hidden">New Password</label>
-                                </div>
-                                <div class="mb-3 input-group">
-                                    <span class="input-group-text my-3"><i class="fa fa-lock"></i></span>
-                                    <input type="password" class="form-control fs-4 my-3" id="confirm_password" name="confirm_password" placeholder="Confirm New Password">
-                                    <label for="confirm_password" class="form-label fs-3 text-white visually-hidden">Confirm New Password</label>
-                                </div>
                                 <div class="text-center mt-5">
-                                    <button type="submit" class="btn btn-primary fs-3" style = "width:100%;">Submit</button>
+                                    <button type="submit" name="update" class="btn btn-primary fs-3" style = "width:100%;">Submit</button>
                                 </div>
                             </form>
                         </div>
@@ -102,10 +94,105 @@
         </div>
     </div>
 </div>
-<nav class="navbar border-top sticky-bottom">
+<nav class="navbar border-top ">
     <div class="d-flex justify-content-center align-items-center w-100">
-        <h3 class="fw-light"> You've reached the end of the Page 😐 </h3>
+        <h3 class="fw-light"> Embarcing Changes is our motto ➿ </h3>
     </div>
 </nav>
+
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-header bg-primary">
+          <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Change Password</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+            <div class="container">
+
+                <div class="row justify-content-center">
+                    <div class="col-md-12">
+                        <h3 class="fs-2 fw-bold text-primary">Change Your Password</h3>
+                        <p class="fs-4 text-primary">It's a good idea to use a strong password that you're not using elsewhere</p>
+                    </div>
+                </div>
+
+                <div class="row d-box justify-content-center">
+                    <form action="{{ url_for('userDash') }}" method="POST" class="col-md-12">
+                        {{ password_form.hidden_tag() }}
+                        <div class="mb-3 input-group ">
+                            <span class="input-group-text my-3"><i class="fa-solid fa-key"></i></span>
+                            <input type="password" class="form-control my-3 fs-4" id="old_password" name="old_password" placeholder="Old Password" required>
+                            <label for="old_password" class="form-label fs-3 text-white visually-hidden">Old Password</label>
+                        </div>
+            
+                        <div class="mb-3 input-group ">
+                            <span class="input-group-text my-3"><i class="fa-solid fa-key"></i></span>
+                            <input type="password" class="form-control my-3 fs-4" id="password" name="password" placeholder="New Password" required>
+                            <label for="password" class="form-label fs-3 text-white visually-hidden">New Password</label>
+                        </div>
+                        
+                        <div class="mb-3 input-group">
+                            <span class="input-group-text my-3"><i class="fa-solid fa-key"></i></span>
+                            <input type="password" class="form-control my-3 fs-4" id="confirm" name="confirm" placeholder="Confirm New Password" required>
+                            <label for="confirm" class="form-label fs-3 text-white visually-hidden">Confirm New Password</label>
+                        </div>
+            
+                        <div class="text-center mt-5">
+                            <button type="submit" name="change" class="btn btn-warning fs-3" style="width:100%;">Change Password</button>
+                        </div>
+                    </form>
+                </div>
+            </div>            
+        </div>
+      </div>
+    </div>
+</div>
+
+<!--Delete Account Modal-->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog rounded-3">
+      <div class="modal-content">
+        <div class="modal-header bg-danger">
+          <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Delete Account</h1>
+          <button type="button" class="btn-close btn-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class ="container">
+            <div class = "row d-flex justidy-content-center">
+                <div class = "col-md-12">
+                    <h3 class="fs-2 fw-bold text-danger">Are you sure you want to delete your account?</h3>
+                    <p class="fs-4 text-danger">You will lose all your data and you will not be able to recover it</p>
+                </div>
+            </div>
+            <div class="row d-box justify-content-center">
+                <form action="{{ url_for('userDash') }}" method="POST">
+                    {{ delete_form.hidden_tag() }}
+                    
+                    <div class="mb-3 input-group my-3">
+                        <span class="input-group-text my-3"><i class="fa fa-envelope"></i></span>
+                        <input type="email" class="form-control fs-4 my-3" id="email" name="email" placeholder="Email" value="{{ user.email }}" readonly>
+                        <label for="email" class="form-label fs-3 text-white visually-hidden">Email</label>
+                    </div>
+                    
+                    <div class="mb-3 input-group my-3">
+                        <span class="input-group-text my-3"><i class="fa-solid fa-key"></i></span>
+                        <input type="password" class="form-control my-3 fs-4" id="confirm_password" name="confirm_password" placeholder="Password" required>
+                        <label for="confirm_password" class="form-label fs-3 text-white visually-hidden">Password</label>
+                    </div>
+            
+                    <div class="modal-footer">
+                        <button type="submit" name="delete" class="btn btn-danger fs-3" data-bs-dismiss="modal" style="width:100%;">Delete Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 {% endblock content %}

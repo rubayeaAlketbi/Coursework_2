@@ -8,9 +8,44 @@
         </section>
     </div>
 
-    <div class="container-fluid rounded-1 d-grid border-top ", style="width:100%; padding:1rem;">
+    <div class="container-fluid rounded-3 d-grid border-top ", style="width:100%; padding:1rem;">
         {%if latest_posts%}
-        <h1 class="display-5 p-3 m-6 text-center fw-light text-white mr-5 ">Your Posts :</h1>  
+        <h1 class="display-5 p-3 m-6 text-center fw-bold text-white mr-5 ">Your Achievements 🏆 :</h1>
+        
+        <div class="container my-4">
+            <div class="row">
+                <!-- Total Posts Card -->
+                <div class="col-md-4">
+                    <div class="card text-center glassContainer rounded-2">
+                        <div class="card-body py-2">
+                            <h3 class="card-title fs-1 fw-bold ">Total Posts 🌟</h3>
+                            <h1 class="card-text fs-1 fw-light ">{{ post_count }} Titles</h1>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Total Comments Card -->
+                <div class="col-md-4">
+                    <div class="card text-center glassContainer rounded-2">
+                        <div class="card-body py-2">
+                            <h3 class="card-title fs-1 fw-bold ">Total Comments 💬</h3>
+                            <h1 class="card-text fs-1 fw-light ">{{ comment_count }} Comments</h1>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Total Tags Card -->
+                <div class="col-md-4">
+                    <div class="card text-center glassContainer rounded-2">
+                        <div class="card-body py-2 ">
+                            <h3 class="card-title fs-1 fw-bold">Total Tags 🏷️</h3>
+                            <h1 class="card-text fs-1 fw-light">{{ tag_count }} Tags</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="row d-flex justify-content-center align-items-center gap-3 m">
             {% for post in latest_posts %}
             <div class="col-md-3 growContainer">
