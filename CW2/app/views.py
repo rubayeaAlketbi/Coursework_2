@@ -4,11 +4,9 @@ from datetime import datetime
 from .forms import LoginForm, UserForm, PostForm,UpdateAccountForm,CommentForm,ChangePasswordForm,deleteAccountForm,DeletePostForm, UpdatePostForm
 from .models import User, Post, Tag, post_tag, Comment
 from flask_login import login_user, logout_user, login_required, current_user
-from flask_restful import Resource, reqparse, fields, marshal_with
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid as uuid
-import os
 from sqlalchemy import func
 import re
 
@@ -255,7 +253,6 @@ def add_post():
 
 
 @app.route('/explore', methods=['GET', 'POST'])
-@login_required
 def explore():
     # Store the users in a dictionary for easy lookup
     userCache = {}
@@ -277,6 +274,7 @@ def explore():
 
 
 @app.route('/post/<int:post_id>', methods=['GET', 'POST'])
+@login_required
 def post(post_id):
     post = Post.query.get_or_404(post_id)
     post_author = User.query.filter_by(id=post.author_id).first()
