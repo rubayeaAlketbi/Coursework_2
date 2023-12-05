@@ -18,13 +18,13 @@
                         <div class="col-md-6 mb-1 p-3">
                         {{ register_form.fname.label(class="form-label text-white fs-3") }}
                         <div class="input-group has-validation">
-                            {{ register_form.fname(class="form-control", placeholder="Rubayea") }}
+                            {{ register_form.fname(class="form-control", placeholder="e.g Rubayea") }}
                         </div>
                     </div>
                     <div class="col-md-6 mb-1 p-3">
                         {{ register_form.lname.label(class="form-label text-white fs-3") }}
                         <div class="input-group has-validation">
-                            {{ register_form.lname(class="form-control",placeholder="AlKetbi") }}
+                            {{ register_form.lname(class="form-control",placeholder="e.g AlKetbi") }}
                         </div>
                     </div>
                 </div>
@@ -37,7 +37,7 @@
                         <div class="input-group has-validation">
                             <span class="input-group-text">
                                 <i class="fa-solid fa-user"></i></span>
-                            {{ register_form.username(class="form-control", id="username" ,placeholder="Dr42") }}
+                            {{ register_form.username(class="form-control", id="username" ,placeholder="e.g Dr42") }}
                             <div class="invalid-feedback" id="usernameError"></div>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
                             <span class="input-group-text">
                                 <i class="fa fa-envelope"></i> <!-- Font Awesome envelope icon -->
                             </span>
-                            {{ register_form.email(class="form-control",placeholder="name@server.com") }}
+                            {{ register_form.email(class="form-control",placeholder="e.g name@server.com", type="email") }}
                             <div class="invalid-feedback" id="emailError"></div>
                         </div>
                     </div>
@@ -91,4 +91,6 @@
         <h3 class="fw-light"> Made by Martians 👽 </h3>
     </div>
 </nav>
+
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
 {% endblock content %}

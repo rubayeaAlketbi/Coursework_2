@@ -59,3 +59,8 @@ class UpdatePostForm(FlaskForm):
 class DeletePostForm(FlaskForm):
     delete = SubmitField('Delete')
     
+class DeleteCommentForm(FlaskForm):
+    delete = SubmitField('Delete')
+    
+    
+    

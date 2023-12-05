@@ -1,7 +1,7 @@
 from app import app,db,login_manager,api
 from flask import render_template, flash, redirect,request,jsonify,url_for
 from datetime import datetime
-from .forms import LoginForm, UserForm, PostForm,UpdateAccountForm,CommentForm,ChangePasswordForm,deleteAccountForm,DeletePostForm, UpdatePostForm
+from .forms import LoginForm, UserForm, PostForm,UpdateAccountForm,CommentForm,ChangePasswordForm,deleteAccountForm,DeletePostForm, UpdatePostForm,DeletePostForm,DeleteCommentForm,UpdateCommentForm
 from .models import User, Post, Tag, post_tag, Comment
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
@@ -281,7 +281,9 @@ def post(post_id):
     comments = Comment.query.filter_by(post_id=post_id).all()
     comment_form = CommentForm()
     delete_post_form = DeletePostForm()
+    delete_comment_form = DeleteCommentForm()
     updatePost = UpdatePostForm()
+    updateComment = UpdateCommentForm()
     userCache = {user.id: user.name for user in User.query.all()}
 
     if request.method == 'POST':
@@ -333,9 +335,26 @@ def post(post_id):
         current_user_id=current_user_id,
         comments_with_authors=comments_with_authors,
         delete_post_form=delete_post_form,
-        updatePost=updatePost
+        delete_comment_form=delete_comment_form,
+        updatePost=updatePost,
+        updateComment=updateComment
     )
     
+
+@app.route('/delete_comment/<int:comment_id>', methods=['POST'])  
+@login_required
+def delete_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    if comment.author_id != current_user.id:
+        flash('You cannot delete this comment.', 'danger')
+        return redirect(url_for('index'))
+    else:
+        db.session.delete(comment)
+        db.session.commit()  
+        flash('Your comment has been deleted!', 'success')
+    return redirect(url_for('post', post_id=comment.post_id))
+    
+
 @app.route('/edit_post/<int:post_id>', methods=['POST'])
 @login_required
 def edit_post(post_id):
