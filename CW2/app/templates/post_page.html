@@ -127,8 +127,6 @@
                 </div>
                 <div class="modal-body">
                     <h3 class="fs-2 fw-bold text-danger">Editing the Post ✏️</h3>
-                </div>
-                <div class="modal-footer">
                     <form action="{{ url_for('edit_post', post_id=post.id) }}" method="post">
                         {{ updatePost.hidden_tag() }}
                         <div class="mb-1 p-3">
@@ -139,8 +137,10 @@
                             {{updatePost.caption.label(class="form-label fs-3")}}
                             {{updatePost.caption(class="form-control fs-3")}}
                         </div>
-
-                            {{updatePost.update(class="btn btn-primary btn-lg" , style="width:100%; margin:auto;")}}
+    
+                    </div>
+                    <div class="modal-footer">
+                    {{updatePost.update(class="btn btn-primary btn-lg" , style="width:100%; margin:auto;")}}
                     </form>
                 </div>
             </div>

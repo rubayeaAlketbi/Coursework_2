@@ -365,23 +365,33 @@ def post(post_id):
 @login_required
 def edit_post(post_id):
     post = Post.query.get_or_404(post_id)
-    post_form = UpdatePostForm()
-    
-    # Check if the current user is the author of the post
     if post.author_id != current_user.id:
-        flash('You can only edit your own posts!', 'danger')
-        return redirect(url_for('my_page'))  # Or some other page where the user can see their posts
+        flash('You cannot edit this post.', 'danger')
+        return redirect(url_for('index'))  # Redirect to the homepage or other appropriate page
 
-    # Process the form submission
-    if request.method == 'Post':
+    post_form = PostForm(obj=post)  # Pre-populate the form with the existing post
+    
+    if request.method == "POST":
+        # Update the post's title and content
         post.title = post_form.title.data
         post.caption = post_form.caption.data
-        post.publish_date = datetime.utcnow()
+        
+        # Clear existing tags and add the new ones from the form content
+        post.tags.clear()
+        tags = set(re.findall(r'#([A-Za-z0-9_]+)', post.caption))
+        for tag_name in tags:
+            tag = Tag.query.filter_by(name=tag_name).first()
+            if not tag:
+                tag = Tag(name=tag_name)
+                db.session.add(tag)
+            post.tags.append(tag)
+
+        # Commit the changes to the database
         db.session.commit()
         flash('Your post has been updated!', 'success')
-    
-    # After editing the post or if the user is not the author, render the edit page again
+        return redirect(url_for('post', post_id=post.id))  # Redirect to the view post page
     return redirect(url_for('post', post_id=post_id))
+
 
 
 @app.route('/delete_post/<int:post_id>', methods=['GET', 'POST'])

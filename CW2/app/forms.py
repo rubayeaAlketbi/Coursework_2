@@ -53,7 +53,7 @@ class CommentForm(FlaskForm):
 class UpdatePostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     caption = StringField('Write your Limbo', validators=[DataRequired()], widget=TextArea())
-    tags = StringField('Tags', validators=[DataRequired()])
+    tags = StringField('Tags')
     update = SubmitField('Update')
 
 class DeletePostForm(FlaskForm):
