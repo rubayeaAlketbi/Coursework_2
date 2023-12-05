@@ -16,6 +16,7 @@
                 <h3>@{{ post_author.username }}</h3>
                 <h2>{{ post_author.name }}</h2>
                 <h5>{{ post.publish_date.strftime('%d %B %Y') }}</h5>
+                {% if current_user_id == post.author_id %}
                 <div class="row d-flex justify-content-center py-4">
                     <div class= "col-6">
                         <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#updatePost">
@@ -28,6 +29,7 @@
                         </button>
                     </div>
                 </div>
+                {% endif %}
             </div>
     
             <!-- Column for Title and Publish Date -->
@@ -96,6 +98,7 @@
     </div>
     
     <!--Delete Account Modal-->
+    
     <div class="modal fade" id="deletePost" tabindex="-1" aria-labelledby="deletePostModalLabel" aria-hidden="true">
         <div class="modal-dialog rounded-3">
             <div class="modal-content">
@@ -145,7 +148,7 @@
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
 
 </div>
 

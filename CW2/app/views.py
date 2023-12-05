@@ -322,7 +322,7 @@ def post(post_id):
             db.session.add(new_comment)
             db.session.commit()
             return redirect(url_for('post', post_id=post_id))  # Redirect after form submission
-
+    current_user_id = current_user.id
     # Regular GET request
     comments_with_authors = db.session.query(Comment, User.name).join(User, User.id == Comment.author_id).filter(Comment.post_id == post_id).all()
     return render_template(
@@ -332,6 +332,7 @@ def post(post_id):
         comment_form=comment_form,
         userCache=userCache,
         post_author=post_author,
+        current_user_id=current_user_id,
         comments_with_authors=comments_with_authors,
         delete_post_form=delete_post_form,
         updatePost=updatePost
