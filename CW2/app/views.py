@@ -1,7 +1,7 @@
 from app import app,db,login_manager,api
 from flask import render_template, flash, redirect,request,jsonify,url_for
 from datetime import datetime
-from .forms import LoginForm, UserForm, PostForm,UpdateAccountForm,CommentForm,ChangePasswordForm,deleteAccountForm
+from .forms import LoginForm, UserForm, PostForm,UpdateAccountForm,CommentForm,ChangePasswordForm,deleteAccountForm,DeletePostForm, UpdatePostForm
 from .models import User, Post, Tag, post_tag, Comment
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_restful import Resource, reqparse, fields, marshal_with
@@ -228,8 +228,6 @@ def my_page():
 
 
 
-
-    
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():
@@ -308,6 +306,8 @@ def post(post_id):
     post_author = User.query.filter_by(id=post.author_id).first()
     comments = Comment.query.filter_by(post_id=post_id).all()
     comment_form = CommentForm()
+    delete_post_form = DeletePostForm()
+    updatePost = UpdatePostForm()
     userCache = {user.id: user.name for user in User.query.all()}
 
     if request.method == 'POST':
@@ -356,8 +356,52 @@ def post(post_id):
         comment_form=comment_form,
         userCache=userCache,
         post_author=post_author,
-        comments_with_authors=comments_with_authors
+        comments_with_authors=comments_with_authors,
+        delete_post_form=delete_post_form,
+        updatePost=updatePost
     )
+    
+@app.route('/edit_post/<int:post_id>', methods=['POST'])
+@login_required
+def edit_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    post_form = UpdatePostForm()
+    
+    # Check if the current user is the author of the post
+    if post.author_id != current_user.id:
+        flash('You can only edit your own posts!', 'danger')
+        return redirect(url_for('my_page'))  # Or some other page where the user can see their posts
+
+    # Process the form submission
+    if request.method == 'Post':
+        post.title = post_form.title.data
+        post.caption = post_form.caption.data
+        post.publish_date = datetime.utcnow()
+        db.session.commit()
+        flash('Your post has been updated!', 'success')
+    
+    # After editing the post or if the user is not the author, render the edit page again
+    return redirect(url_for('post', post_id=post_id))
+
+
+@app.route('/delete_post/<int:post_id>', methods=['GET', 'POST'])
+@login_required
+def delete_post(post_id):
+    delete_post_form = DeletePostForm()
+    post = Post.query.get_or_404(post_id)
+    if request.method == 'POST' and post.author_id == current_user.id:
+        # Delete all of the comments of the post
+        comments = Comment.query.filter_by(post_id=post_id).all()
+        for comment in comments:
+            db.session.delete(comment)
+            db.session.commit()
+        # Delete the post
+        db.session.delete(post)
+        db.session.commit()
+        flash('Your post has been deleted!', 'success')
+        return redirect(url_for('my_page'))
+    flash('You can only delete your own posts!', 'danger')
+    return redirect(url_for('post', post_id=post_id))
 
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
