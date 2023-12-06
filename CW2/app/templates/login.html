@@ -17,7 +17,7 @@
                         <span class="input-group-text">
                             <i class="fa fa-user"></i> <!-- Font Awesome user icon -->
                         </span>
-                        {{ login_form.username(class="form-control") }}
+                        {{ login_form.username(class="form-control", placeholder="e.g Dr42") }}
                     </div>
                 </div>
             
@@ -34,8 +34,8 @@
             
                 <!-- Button container with d-flex and justify-content-center classes -->
                 <div class="d-flex justify-content-center p-3">
-                    <button type="submit" class="btn btn-primary btn-lg m-1">Login</button>
-                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg m-1">Register</a>
+                    <button type="submit" class="btn btn-primary btn-lg m-1 growContainer">Login</button>
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg m-1 growContainer">Register</a>
                 </div>
                 </div>
             </form>

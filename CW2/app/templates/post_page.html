@@ -1,13 +1,6 @@
 {% extends "home.html" %}
 {% block content %}
 
-{% for message in get_flashed_messages() %}
-    <div class="alert alert-primary alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-{% endfor %}
-
 <div class = "container-fluid movingGrade py-4 border-black">
     <div class="container mb-4 normalContainer">
         <div class="row p-3 ">
@@ -16,7 +9,7 @@
                 <h3>@{{ post_author.username }}</h3>
                 <h2>{{ post_author.name }}</h2>
                 <h5>{{ post.publish_date.strftime('%d %B %Y') }}</h5>
-                {% if current_user_id == post.author_id %}
+                {% if current_user_id == post.author_id or current_user_id == 1%}
                 <div class="row d-flex justify-content-center py-4">
                     <div class= "col-6">
                         <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#updatePost">
