@@ -1,24 +1,46 @@
 {%extends "home.html"%}
 {%block content%}
-<main class="container-fluid p-4 h-full">
-    <div class="container">
+<div class="container-fluid border-top h-full">
+    <!--Section title -->
+    <div class="container-fluid border-bottom">
         <div class="row">
-            <div class="container">
-                <div class="row d-flex justify-content-middle align-items-center">
-                    <div class="col col-2">
-                        <div class ="row mb-1">
-                            <h1> Welcome to Admin Page  </h1>
-                        </div>
-                    <div class ="container">
-                        <div class ="row">
-                            <div class ="col col-2">
-                                <h2> 20 </h2>
-                            </div>
-                        </div>
-                    </div>                    
-                </div>
-            </div>
+            <h1 class="display-3  fw-bold pt-4 p-6 text-center">The Admin Page 👔 </h1>
+        </div>
+        <div class="row pb-3 mb-3">
+            <p class="fs-3 fw-light text-center">The table shows the users, their posts , and their comments</p>
         </div>
     </div>
-</main>
+
+    <div class="container-fluid border-bottom-black py-3 movingGradeient h-full rounded-3">
+        <table class = "table table-hover table-striped table-bordered text-center">
+            <thead>
+                <!--Table headers-->
+                <tr>
+                    <th scope="col fs-2"> username</th>
+                    <th scope="col fs-2">Full Name</th>
+                    <th scope="col fs-2">Number of Posts</th>
+                    <th scope="col fs-2">Number of Comments</th>
+                    <th scope="col fs-2">Delete Account</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user_posts_counts[user.id] }}</td>
+                    <td>{{ user_comments_counts[user.id] }}</td>
+                    <!-- ... -->
+                    <td>
+                        <!-- Delete User Form -->
+                        <form action="{{ url_for('deleteUsers', user_id=user.id) }}" method="post">
+                            {{ delete_user_form.hidden_tag() }}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {%endblock content%}

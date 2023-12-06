@@ -1,7 +1,7 @@
 from app import app,db,login_manager,api
 from flask import render_template, flash, redirect,request,jsonify,url_for
 from datetime import datetime
-from .forms import LoginForm, UserForm, PostForm,UpdateAccountForm,CommentForm,ChangePasswordForm,deleteAccountForm,DeletePostForm, UpdatePostForm,DeletePostForm,DeleteCommentForm,UpdateCommentForm
+from .forms import LoginForm, UserForm, PostForm,UpdateAccountForm,CommentForm,ChangePasswordForm,deleteAccountForm,DeletePostForm, UpdatePostForm,DeletePostForm,DeleteCommentForm
 from .models import User, Post, Tag, post_tag, Comment
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
@@ -123,7 +123,7 @@ def userDash():
     
     elif 'delete' in request.form:
         print("Delete")
-        if  'delete' in request.form:
+        if  'delete' in request.form and current_user.username != 'admin':
             if check_password_hash(current_user.passwordHashed, delete_form.confirm_password.data):
                 #Delete the comments of the user
                 comments = Comment.query.filter_by(author_id=current_user.id).all()
@@ -345,7 +345,7 @@ def post(post_id):
 @login_required
 def delete_comment(comment_id):
     comment = Comment.query.get_or_404(comment_id)
-    if comment.author_id != current_user.id:
+    if (comment.author_id != current_user.id) or (current_user.username == 'admin'):
         flash('You cannot delete this comment.', 'danger')
         return redirect(url_for('index'))
     else:
@@ -393,7 +393,7 @@ def edit_post(post_id):
 def delete_post(post_id):
     delete_post_form = DeletePostForm()
     post = Post.query.get_or_404(post_id)
-    if request.method == 'POST' and post.author_id == current_user.id:
+    if (request.method == 'POST' and post.author_id == current_user.id) or (request.method == 'POST' and current_user.username == 'admin'):
         # Delete all of the comments of the post
         comments = Comment.query.filter_by(post_id=post_id).all()
         for comment in comments:
@@ -410,5 +410,38 @@ def delete_post(post_id):
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin():
-    posts = Post.query.all()
-    return render_template("admin_dash.html", posts = posts)
+    # The admin views the users and views the number of posts and comments of each user
+    users = User.query.filter(User.id != 1).all()
+    # Load the delete user form
+    delete_user_form = deleteAccountForm()
+     # Create dictionaries to hold the post and comment counts for each user
+    user_posts_counts = {user.id: Post.query.filter_by(author_id=user.id).count() for user in users}
+    user_comments_counts = {user.id: Comment.query.filter_by(author_id=user.id).count() for user in users}
+    return render_template("admin_dash.html",users=users,user_posts_counts=user_posts_counts,user_comments_counts=user_comments_counts,delete_user_form=delete_user_form )
+
+@app.route('/admin/delete_user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def deleteUsers(user_id):
+    if current_user.id != 1:  # Assuming user with ID 1 is the admin
+        flash('You are not authorized to perform this action.', 'danger')
+        return redirect(url_for('admin'))
+
+    user_to_delete = User.query.get_or_404(user_id)
+    # delete all of the posts of the user
+    posts = Post.query.filter_by(author_id=user_id).all()
+    # Delete all of the comments of the user
+    comments = Comment.query.filter_by(author_id=user_id).all()
+    for comment in comments:
+        db.session.delete(comment)
+        db.session.commit()
+    # Delete all of the posts of the user
+    posts = Post.query.filter_by(author_id=user_id).all()
+    for post in posts:
+        db.session.delete(post)
+        db.session.commit()
+    # Delete the user
+    db.session.delete(user_to_delete)
+    db.session.commit()
+    flash('User deleted successfully!', 'success')
+    return redirect(url_for('admin'))
+    

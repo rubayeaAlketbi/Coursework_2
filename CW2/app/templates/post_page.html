@@ -57,7 +57,7 @@
     <div class="container mb-4">
         <div class="row">
             <div class="col-12">
-                {% for comment, author_name in comments_with_authors %}
+                {% for comment, author_name in comments_with_authors or current_user_id == 1 %}
                 <!-- Add an ID to each comment container -->
                 <div class="row p-3 border-bottom" id="comment-{{ comment.id }}">
                     <div class="col-8">
@@ -67,7 +67,7 @@
                     <div class="col-4 d-flex gap-1 align-item-middle">
                         <!-- Delete button with data-comment-id attribute -->
                         <p>{{ comment.publish_date.strftime('%Y-%m-%d %H:%M') }}</p>
-                        {% if current_user_id == comment.author_id %}
+                        {% if current_user_id == comment.author_id  %}
                         <form action="{{ url_for('delete_comment', comment_id=comment.id) }}" method="post" class="mx-2">
                             {{ delete_comment_form.hidden_tag() }}
                             <button type="submit" name="delete" class="btn btn-danger">Delete</button>
