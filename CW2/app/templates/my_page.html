@@ -1,86 +1,112 @@
-{%extends "home.html"%}
-{%block content%}
-<div class=" movingGradeient h-full"> 
-    <div class="container-fluid border-top border-bottom py-4 banner">
-        <section class="container-sm my-auto text-center">
-            <h1 class="display-5 fw-bold">{{ user.name }}'s Home Page✨</h1>
-        </section>
+{%extends "home.html"%} {%block content%}
+<div class="movingGradeient h-full">
+  <div class="container-fluid border-top border-bottom py-4 banner">
+    <section class="container-sm my-auto text-center">
+      <h1 class="display-5 fw-bold">{{ user.name }}'s Home Page✨</h1>
+    </section>
+  </div>
+
+  <div
+    class="container-fluid rounded-3 d-grid border-top"
+    ,
+    style="width: 100%; padding: 1rem"
+  >
+    {%if latest_posts%}
+    <h1 class="display-5 p-3 m-6 text-center fw-bold text-white mr-5">
+      Your Achievements 🏆 :
+    </h1>
+
+    <div class="container my-4">
+      <div class="row">
+        <!-- Total Posts Card -->
+        <div class="col-md-4">
+          <div class="card text-center glassContainer rounded-2">
+            <div class="card-body py-2">
+              <h3 class="card-title fs-1 fw-bold">Total Posts 🌟</h3>
+              <h1 class="card-text fs-1 fw-light">{{ post_count }} Titles</h1>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Comments Card -->
+        <div class="col-md-4">
+          <div class="card text-center glassContainer rounded-2">
+            <div class="card-body py-2">
+              <h3 class="card-title fs-1 fw-bold">Total Comments 💬</h3>
+              <h1 class="card-text fs-1 fw-light">
+                {{ comment_count }} Comments
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Tags Card -->
+        <div class="col-md-4">
+          <div class="card text-center glassContainer rounded-2">
+            <div class="card-body py-2">
+              <h3 class="card-title fs-1 fw-bold">Total Tags 🏷️</h3>
+              <h1 class="card-text fs-1 fw-light">{{ tag_count }} Tags</h1>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="container-fluid rounded-3 d-grid border-top ", style="width:100%; padding:1rem;">
-        {%if latest_posts%}
-        <h1 class="display-5 p-3 m-6 text-center fw-bold text-white mr-5 ">Your Achievements 🏆 :</h1>
-        
-        <div class="container my-4">
+    <div class="row d-flex justify-content-center align-items-center gap-3 m">
+      {% for post in latest_posts %}
+      <div class="col-md-3 growContainer">
+        <a
+          href="{{ url_for('post', post_id=post.id) }}"
+          style="text-decoration: none; color: black"
+        >
+          <div class="container normalContainer" id="{{ post.id }}">
             <div class="row">
-                <!-- Total Posts Card -->
-                <div class="col-md-4">
-                    <div class="card text-center glassContainer rounded-2">
-                        <div class="card-body py-2">
-                            <h3 class="card-title fs-1 fw-bold ">Total Posts 🌟</h3>
-                            <h1 class="card-text fs-1 fw-light ">{{ post_count }} Titles</h1>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Total Comments Card -->
-                <div class="col-md-4">
-                    <div class="card text-center glassContainer rounded-2">
-                        <div class="card-body py-2">
-                            <h3 class="card-title fs-1 fw-bold ">Total Comments 💬</h3>
-                            <h1 class="card-text fs-1 fw-light ">{{ comment_count }} Comments</h1>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Total Tags Card -->
-                <div class="col-md-4">
-                    <div class="card text-center glassContainer rounded-2">
-                        <div class="card-body py-2 ">
-                            <h3 class="card-title fs-1 fw-bold">Total Tags 🏷️</h3>
-                            <h1 class="card-text fs-1 fw-light">{{ tag_count }} Tags</h1>
-                        </div>
-                    </div>
-                </div>
+              <div class="col-md-4 border-end">
+                <h5 class="fw-light px-3">
+                  {{ post.publish_date.strftime('%Y-%m-%d %H:%M') }}
+                </h5>
+              </div>
+              <div class="col-md-8 py-2">
+                <h4 class="fw-bold text-center">{{ post.title }}</h4>
+                <h3 class="fw-light text-center">{{ post.caption }}</h3>
+              </div>
             </div>
-        </div>
-        
-        <div class="row d-flex justify-content-center align-items-center gap-3 m">
-            {% for post in latest_posts %}
-            <div class="col-md-3 growContainer">
-                <a href="{{ url_for('post', post_id=post.id) }}" style="text-decoration:none; color:black;">
-                <div class="container normalContainer" id="{{ post.id }}">
-                    <div class="row">
-                        <div class="col-md-4 border-end">
-                            <h5 class="fw-light px-3">{{ post.publish_date.strftime('%Y-%m-%d %H:%M') }}</h5>
-                        </div>
-                        <div class="col-md-8 py-2">
-                            <h4 class="fw-bold text-center">{{ post.title }}</h4>
-                            <h3 class="fw-light text-center">{{ post.caption }}</h3>
-                        </div>
-                    </div>
-                </div>
-            </a>
-            </div>
-            {% endfor %}
-        </div>
-        {%else%}
-        <div class="container-fluid py-4 h-full movingGradeient d-flex rounded">
-            <section class="container-sm my-auto text-center justify-content-center ">
-                <h1 class="display-4 fw-bold text-white">No Posts Yet 😶‍🌫️</h1>
-                <p class="display-6 fw-light text-white">Create a Post to view your recent activity ... </p>
-                <a href="{{ url_for('add_post') }}" class="btn btn-primary btn-lg">Create Post</a>
-                <a href="{{ url_for('explore') }}" class="btn btn-primary btn-lg">Explore Page</a>
-            </section>
-        </div>
-        {%endif%}
+          </div>
+        </a>
+      </div>
+      {% endfor %}
     </div>
+    {%else%}
+    <div class="container-fluid py-4 h-full movingGradeient d-flex rounded">
+      <section class="container-sm my-auto text-center justify-content-center">
+        <h1 class="display-4 fw-bold text-white">No Posts Yet 😶‍🌫️</h1>
+        <p class="display-6 fw-light text-white">
+          Create a Post to view your recent activity ...
+        </p>
+        <a href="{{ url_for('add_post') }}" class="btn btn-primary btn-lg"
+          >Create Post</a
+        >
+        <a href="{{ url_for('explore') }}" class="btn btn-primary btn-lg"
+          >Explore Page</a
+        >
+      </section>
+    </div>
+    {%endif%}
+  </div>
 </div>
 
 <footer class="navbar sticky-bottom banner border-top">
-    <div class="container d-flex justify-content-center align-items-center p-3">
-        <a href="{{ url_for('explore') }}" class="text-white btn btn-primary btn-lg mx-2">Explore</a>
-        <a href="{{ url_for('add_post') }}" class="text-white btn btn-primary btn-lg mx-2">Create Post</a>
-    </div>
+  <div class="container d-flex justify-content-center align-items-center p-3">
+    <a
+      href="{{ url_for('explore') }}"
+      class="text-white btn btn-primary btn-lg mx-2"
+      >Explore</a
+    >
+    <a
+      href="{{ url_for('add_post') }}"
+      class="text-white btn btn-primary btn-lg mx-2"
+      >Create Post</a
+    >
+  </div>
 </footer>
 {%endblock%}

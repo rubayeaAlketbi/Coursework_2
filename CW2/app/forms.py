@@ -29,11 +29,17 @@ class UserForm(FlaskForm):
     registerButton = SubmitField('Register')
 
 
+''' Update account form which takes in the username, name and email of the user '''
+
+
 class UpdateAccountForm(FlaskForm):
     username = StringField('Username')
     name = StringField('Name')
     email = StringField('Email Address')
     update = SubmitField('Update')
+
+
+''' Change password form which takes in the old password, new password and confirm password of the user '''
 
 
 class ChangePasswordForm(FlaskForm):
@@ -42,6 +48,9 @@ class ChangePasswordForm(FlaskForm):
         min=8, max=20), EqualTo('confirm', message='Passwords must match')])
     confirm = PasswordField('Confirm Password', validators=[DataRequired()])
     change = SubmitField('Change Password')
+
+
+''' Delete account form which takes in the email, password and confirm password of the user '''
 
 
 class deleteAccountForm(FlaskForm):
@@ -53,6 +62,9 @@ class deleteAccountForm(FlaskForm):
     delete = SubmitField('Delete Account')
 
 
+''' Post form which takes in the title, caption, author and tags of the post '''
+
+
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     caption = StringField('Write your Limbo', validators=[
@@ -62,10 +74,16 @@ class PostForm(FlaskForm):
     postButton = SubmitField('Post')
 
 
+''' Comment form which takes in the text of the comment '''
+
+
 class CommentForm(FlaskForm):
     text = StringField('Your Comment', validators=[
                        DataRequired()], widget=TextArea())
     commentButton = SubmitField('Comment')
+
+
+''' Update post form which takes in the title, caption and tags of the post '''
 
 
 class UpdatePostForm(FlaskForm):
@@ -76,8 +94,14 @@ class UpdatePostForm(FlaskForm):
     update = SubmitField('Update')
 
 
+''' Delete post form which takes in the delete button '''
+
+
 class DeletePostForm(FlaskForm):
     delete = SubmitField('Delete')
+
+
+''' Delete comment form which takes in the delete button '''
 
 
 class DeleteCommentForm(FlaskForm):

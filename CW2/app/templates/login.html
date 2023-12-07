@@ -1,12 +1,15 @@
 {%extends "home.html"%}
 {%block content%}
+<!--The container that holds the viewport-->
 <main class="container-fluid p-4 h-full movingGrade">
+    <!--The container that contains the form-->
     <div class = "container ">
         <div class ="row p-2 d-flex justify-content-center align-items-center h-100">
             <div class = "col-12 text-center">
                 <h1 class="fw-bold text-white display-4">Welcome to the Login page ✨</h1>
                 <p class="fs-4 fw-light text-white py-2">Login to your Account to start sharing</p>
             </div>
+            <!--Start of the form-->
             <form method="post" class="formContainer neoBackground d-inline-box" style="max-width:60rem; border-radius:10px; padding:3rem;">
                 {{ login_form.hidden_tag() }}
                 <div class "container p-4">
@@ -20,7 +23,6 @@
                         {{ login_form.username(class="form-control", placeholder="e.g Dr42") }}
                     </div>
                 </div>
-            
                 <!-- Password field with icon -->
                 <div class="mb-1 p-3">
                     {{ login_form.password.label(class="form-label text-white fs-3") }}
@@ -31,7 +33,6 @@
                         {{ login_form.password(class="form-control password") }}
                     </div>
                 </div>
-            
                 <!-- Button container with d-flex and justify-content-center classes -->
                 <div class="d-flex justify-content-center p-3">
                     <button type="submit" class="btn btn-primary btn-lg m-1 growContainer">Login</button>
@@ -39,7 +40,7 @@
                 </div>
                 </div>
             </form>
-            
+            <!--End of the form-->
         </div>
     </div>
 </main>

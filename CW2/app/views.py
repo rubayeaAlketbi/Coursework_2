@@ -1,4 +1,5 @@
-from app import app, db, login_manager, api
+# Importing the required libraries
+from app import app, db, login_manager
 from flask import render_template, flash, redirect, request, jsonify, url_for
 from datetime import datetime
 from .forms import LoginForm, UserForm, PostForm, UpdateAccountForm, CommentForm, ChangePasswordForm, deleteAccountForm, DeletePostForm, UpdatePostForm, DeletePostForm, DeleteCommentForm
@@ -10,16 +11,23 @@ import uuid as uuid
 from sqlalchemy import func
 import re
 
+# The main home page of the website which is the about page
+
 
 @app.route('/')
 def home():
     return render_template("about.html")
 
+# The route where the user registers to the website
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    # Create the registration form object
     register_form = UserForm()
+    # If the form was submitted and was valid
     if (register_form.validate_on_submit()):
+        # Get the data from the form
         fname = register_form.fname.data
         lname = register_form.lname.data
         username = register_form.username.data
@@ -27,12 +35,11 @@ def register():
         password = register_form.password.data
         # Check if the user exists in the database
         user = User.query.filter_by(email=email).first()
+        # If the user exists, redirect to the login page
         if (user is not None):
-            print("User exists")
-            # User exists, redirect to the login page
-            return redirect('/login')
+            flash("User exists")
+            return redirect('/register')
         else:
-            print("User does not exist")
             # User does not exist, create a new user
             user = User(name=fname + ' ' + lname, email=email,
                         username=username, password=password)
@@ -46,25 +53,19 @@ def register():
             register_form.password.data = ''
             register_form.confirm.data = ''
             # Redirect to the login page
+            flash("User created successfully, Login to continue")
             return redirect('/login')
-
+    # Something went wrong - display the registration form
     return render_template("register.html", register_form=register_form)
 
-
-@app.route('/register/validate-username', methods=['POST'])
-def validate_username():
-    data = request.get_json()  # Use this instead of request.form
-    username = data['username']
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        return jsonify({'success': True})
-    else:
-        return jsonify({'success': False, 'error': 'Username already exists'})
+# The route where the user logs in to the website
 
 
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+# The route where the user logs in to the website
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -80,50 +81,59 @@ def login():
         if (user is not None and user.verify_password(password)):
             # Log in the user
             login_user(user)
-            if (user.username == 'admin'):
+            # Redirect to the appropriate dashboard page
+            if (user.username == 'Admin'):
+                flash("Admin logged in")
                 return redirect('/admin')
             else:
+                flash("User logged in")
                 return redirect('/explore')
         else:
             return redirect('/login')
+    # Something went wrong - display the login form
     return render_template("login.html", login_form=login_form)
+
+# The route where the user updates their account and their settings
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def userDash():
+    # Get the user from the database and store it in a variable
     user = User.query.filter_by(username=current_user.username).first()
+    # Create the forms for the user to update their account and settings
     register_form = UpdateAccountForm()
     password_form = ChangePasswordForm()
     delete_form = deleteAccountForm()
+    # If the form was submitted and was valid and its the update form
     if 'update' in request.form:
         # Check if username is changed and not unique
         if (register_form.username.data != user.username and
                 User.query.filter(User.username == register_form.username.data).first()):
+            # Username is changed and not unique, redirect to the login page
             flash("Username already in use. Please choose another one.", "error")
             return redirect(url_for('userDash'))
-
         # Check if email is changed and not unique
         if (register_form.email.data != user.email and
                 User.query.filter(User.email == register_form.email.data).first()):
+            # Email is changed and not unique, redirect to the login page
             flash("Email already in use. Please choose another one.", "error")
             return redirect(url_for('userDash'))
-
         # Check if the name is changed
         if register_form.name.data:
             user.name = register_form.name.data
-
+        # Check if the username is changed
         user.name = register_form.name.data
         user.username = register_form.username.data
         user.email = register_form.email.data
-
+        # Add the new user details to the database
         db.session.commit()
         flash('Your account has been updated!', 'success')
         return redirect(url_for('userDash'))
-
+    # If the form was submitted and was valid and its the delete form
     elif 'delete' in request.form:
-        print("Delete")
-        if 'delete' in request.form and current_user.username != 'admin':
+        # Check if the user is not the admin and the password is correct
+        if 'delete' in request.form and current_user.username != 'Admin':
             if check_password_hash(current_user.passwordHashed, delete_form.confirm_password.data):
                 # Delete the comments of the user
                 comments = Comment.query.filter_by(
@@ -136,48 +146,52 @@ def userDash():
                 for post in posts:
                     db.session.delete(post)
                     db.session.commit()
-
                 # Delete the user
                 db.session.delete(user)
                 db.session.commit()
+                # Log the user out
                 flash('Your account has been deleted!', 'success')
                 return redirect('/login')
             else:
                 flash("Password is incorrect.", "error")
                 return redirect('/dashboard')
+    # If the form was submitted and was valid and its the password form
     elif 'change' in request.form:
         # Check if old password is correct
         if not check_password_hash(current_user.passwordHashed, password_form.old_password.data):
             flash('Old password is incorrect.', 'danger')
             return redirect(url_for('userDash'))
-
         # Ensure new password is different from the old password
         if password_form.old_password.data == password_form.password.data:
             flash('New password must be different from the old password.', 'danger')
             return redirect(url_for('userDash'))
-
         # Update the user's password
         hashed_password = generate_password_hash(password_form.password.data)
         current_user.passwordHashed = hashed_password  # Use the correct attribute name
         db.session.commit()
-
+        # Update the user's password
         flash('Your password has been updated!', 'success')
         return redirect(url_for('userDash'))
+    # Pre-populate the form with the existing user details
+    return render_template("user_dash.html", user=user, register_form=register_form,
+                           delete_form=delete_form, password_form=password_form)
 
-    print(request.form)
-    return render_template("user_dash.html", user=user, register_form=register_form, delete_form=delete_form, password_form=password_form)
+# The route where the user checks out his posts and comments
 
 
 @app.route('/my_page', methods=['GET', 'POST'])
 @login_required
 def my_page():
+    # Get the user from the database and store it in a variable and get the posts of the user
     user = User.query.filter_by(username=current_user.username).first()
     posts = Post.query.filter_by(author_id=current_user.id).all()
-    latest_posts = []  # Initialize the variable before the loop
+    # Initialize the variable before the loop
+    latest_posts = []
+    # Get the latest posts of the user
     for _ in posts:
         latest_posts = Post.query.filter_by(author_id=current_user.id).order_by(
             Post.publish_date.desc()).limit(5).all()
-    # Return all of the posts of the user except the post with the highest number of comments and the latest posts
+    # Get the top three recent posts of the user
     top_three_posts = Post.query \
         .outerjoin(Comment, Post.id == Comment.post_id) \
         .with_entities(Post, func.count(Comment.id).label('comment_count')) \
@@ -199,16 +213,24 @@ def my_page():
         for post in posts:
             if tag in post.tags:
                 tag_count += 1
+    # Display the user's page
+    return render_template("my_page.html", user=user, posts=posts,
+                           latest_posts=latest_posts, remaining_posts=top_three_posts,
+                           tag_count=tag_count, post_count=post_count, comment_count=comment_count)
 
-    return render_template("my_page.html", user=user, posts=posts, latest_posts=latest_posts, remaining_posts=top_three_posts, tag_count=tag_count, post_count=post_count, comment_count=comment_count)
+# The route where the user logs out of the website
 
 
 @app.route('/logout', methods=['GET'])
 @login_required
 def logout():
+    # Log the user out
     logout_user()
-    print("User logged out")
+    flash("User logged out")
+    # Redirect to the appropriate homepage
     return redirect('/login')
+
+# The route where the user adds a post
 
 
 @app.route('/addPost', methods=['GET', 'POST'])
@@ -251,6 +273,8 @@ def add_post():
     print("Hello")
     return render_template("add_post.html", post_form=post_form)
 
+# The route where the user views his posts and other users' posts
+
 
 @app.route('/explore', methods=['GET', 'POST'])
 def explore():
@@ -272,42 +296,52 @@ def explore():
 
     return render_template("explore.html", posts=posts.items, userCache=userCache, paginationPost=posts)
 
+# The route where the user views a post
+
 
 @app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def post(post_id):
+    # Load the post from the database
     post = Post.query.get_or_404(post_id)
     post_author = User.query.filter_by(id=post.author_id).first()
     comments = Comment.query.filter_by(post_id=post_id).all()
+    # Create a form objects for each form
     comment_form = CommentForm()
     delete_post_form = DeletePostForm()
     delete_comment_form = DeleteCommentForm()
     updatePost = UpdatePostForm()
+    # Store the users in a dictionary for easy lookup
     userCache = {user.id: user.name for user in User.query.all()}
 
     if request.method == 'POST':
-        if request.is_json:  # This checks if it's an AJAX request
+        # AJAX request will have JSON data instead of form data
+        if request.is_json:
+            # Get the JSON data from the request
             data = request.get_json()
             comment_text = data.get('comment')
-
+            # Check if the comment text is not empty
             if comment_text:
+                # Create a new comment object
                 new_comment = Comment(
                     text=comment_text,
                     post_id=post_id,
                     author_id=current_user.id,
                     publish_date=datetime.utcnow()
                 )
+                # Add the comment to the database
                 db.session.add(new_comment)
                 db.session.commit()
-
+                # Create a dictionary to hold the comment data
                 response_data = {
                     'text': new_comment.text,
                     'author_name': current_user.name,
                     'publish_date': new_comment.publish_date.isoformat()
                 }
-
-                return jsonify(response_data), 201  # Return JSON for AJAX
+                # Return the comment data as JSON
+                return jsonify(response_data), 201
             else:
+                # Return an error if the comment text is empty
                 return jsonify({'error': 'Comment text is required'}), 400
 
         # If not AJAX, it's a regular form submission, handle accordingly
@@ -326,6 +360,7 @@ def post(post_id):
     # Regular GET request
     comments_with_authors = db.session.query(Comment, User.name).join(
         User, User.id == Comment.author_id).filter(Comment.post_id == post_id).all()
+    # Display the post page
     return render_template(
         "post_page.html",
         post=post,
@@ -340,40 +375,47 @@ def post(post_id):
         updatePost=updatePost
     )
 
+# The route where the user deletes a comment
+
 
 @app.route('/delete_comment/<int:comment_id>', methods=['POST'])
 @login_required
+# The route where the user deletes a comment
 def delete_comment(comment_id):
+    # Load the delete comment form and get the comment from the database
     comment = Comment.query.get_or_404(comment_id)
+    # Check if the user is the author of the comment or the admin
     if (comment.author_id != current_user.id) or (current_user.username == 'admin'):
         flash('You cannot delete this comment.', 'danger')
         return redirect(url_for('explore'))
     else:
+        # Delete the comment
         db.session.delete(comment)
         db.session.commit()
         flash('Your comment has been deleted!', 'success')
     return redirect(url_for('post', post_id=comment.post_id))
 
+# The route where the user edits a post
+
 
 @app.route('/edit_post/<int:post_id>', methods=['POST'])
 @login_required
 def edit_post(post_id):
+    # Load the edit post form and get the post from the database
     post = Post.query.get_or_404(post_id)
     if post.author_id != current_user.id:
         flash('You cannot edit this post.', 'danger')
         # Redirect to the homepage or other appropriate page
         return redirect(url_for('index'))
-
     # Pre-populate the form with the existing post
     post_form = PostForm(obj=post)
-
     if request.method == "POST":
         # Update the post's title and content
         post.title = post_form.title.data
         post.caption = post_form.caption.data
-
         # Clear existing tags and add the new ones from the form content
         post.tags.clear()
+        # Find all tags - words that follow a '#'
         tags = set(re.findall(r'#([A-Za-z0-9_]+)', post.caption))
         for tag_name in tags:
             tag = Tag.query.filter_by(name=tag_name).first()
@@ -381,7 +423,6 @@ def edit_post(post_id):
                 tag = Tag(name=tag_name)
                 db.session.add(tag)
             post.tags.append(tag)
-
         # Commit the changes to the database
         db.session.commit()
         flash('Your post has been updated!', 'success')
@@ -389,12 +430,16 @@ def edit_post(post_id):
         return redirect(url_for('post', post_id=post.id))
     return redirect(url_for('post', post_id=post_id))
 
+# The route where the user deletes a post
+
 
 @app.route('/delete_post/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def delete_post(post_id):
+    # Load the delete post form and get the post from the database
     delete_post_form = DeletePostForm()
     post = Post.query.get_or_404(post_id)
+    # Check if the user is the author of the post or the admin
     if (request.method == 'POST' and post.author_id == current_user.id) or (request.method == 'POST' and current_user.username == 'Admin'):
         # Delete all of the comments of the post
         comments = Comment.query.filter_by(post_id=post_id).all()
@@ -404,8 +449,10 @@ def delete_post(post_id):
         # Delete the post
         db.session.delete(post)
         db.session.commit()
+        # Redirect to the homepage or other appropriate page
         flash('Your post has been deleted!', 'success')
         return redirect(url_for('my_page'))
+    # Redirect to the homepage or other appropriate page
     flash('You can only delete your own posts!', 'danger')
     return redirect(url_for('post', post_id=post_id))
 
@@ -413,10 +460,10 @@ def delete_post(post_id):
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin():
-    if current_user.username != "Admin":  # Assuming "admin" is the admin's username
+    # Check if the user is the admin
+    if current_user.username != "Admin":
         flash('You are not authorized to access this page.', 'danger')
-        return redirect(url_for('explore'))  # Make sure to use return here!
-
+        return redirect(url_for('explore'))
     # The admin views the users and views the number of posts and comments of each user
     users = User.query.filter(User.id != 1).all()
     # Load the delete user form
@@ -426,13 +473,17 @@ def admin():
         author_id=user.id).count() for user in users}
     user_comments_counts = {user.id: Comment.query.filter_by(
         author_id=user.id).count() for user in users}
-    return render_template("admin_dash.html", users=users, user_posts_counts=user_posts_counts, user_comments_counts=user_comments_counts, delete_user_form=delete_user_form)
+    return render_template("admin_dash.html", users=users, user_posts_counts=user_posts_counts,
+                           user_comments_counts=user_comments_counts, delete_user_form=delete_user_form)
+
+# The route where the admin deletes a user
 
 
 @app.route('/admin/delete_user/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def deleteUsers(user_id):
-    if current_user.id != 1:  # Assuming user with ID 1 is the admin
+
+    if current_user.id != 1:
         flash('You are not authorized to perform this action.', 'danger')
         return redirect(url_for('admin'))
 

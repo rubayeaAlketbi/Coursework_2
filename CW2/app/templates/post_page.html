@@ -24,7 +24,6 @@
                 </div>
                 {% endif %}
             </div>
-    
             <!-- Column for Title and Publish Date -->
             <div class="col-md text-center">
                 <div class="row">
@@ -89,10 +88,10 @@
         <div class="container">
             <form id="comment_Form" method="post" class="row g-2 align-items-center">
                 {{ comment_form.hidden_tag() }}
-                <div class="col"> <!-- Bootstrap column without flex-grow-1 -->
+                <div class="col"> 
                     {{ comment_form.text(class_="form-control", id="comment_Text", placeholder="Write a comment...", required=True) }}
                 </div>
-                <div class="col-auto"> <!-- Bootstrap column for auto width based on content -->
+                <div class="col-auto"> 
                     {{ comment_form.commentButton(id="commentSubmitButton", class_="btn btn-primary btn-lg") }}
                 </div>
             </form>
@@ -100,7 +99,6 @@
     </div>
     
     <!--Delete Account Modal-->
-    
     <div class="modal fade" id="deletePost" tabindex="-1" aria-labelledby="deletePostModalLabel" aria-hidden="true">
         <div class="modal-dialog rounded-3">
             <div class="modal-content">
@@ -123,6 +121,7 @@
         </div>
     </div> 
 
+    <!--Editing post modal-->
     <div class="modal fade" id="updatePost" tabindex="-1" aria-labelledby="deletePostModalLabel" aria-hidden="true">
         <div class="modal-dialog rounded-3">
             <div class="modal-content">

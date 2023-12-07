@@ -1,21 +1,16 @@
 {% extends "home.html" %}
 {% block content %}
 
-{% for message in get_flashed_messages() %}
-    <div class="alert alert-primary alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-{% endfor %}
 <div class="h-full"> 
-
+    <!--The title of the page-->
     <div class="container-fluid border-top border-bottom py-4">
         <section class="container-sm my-auto text-center">
             <h1 class="display-5 fw-bold">Account Setting✨</h1>
         </section>
     </div>
-
+    <!--Container of the page that contains all of the forms from the viewport-->
     <div class="container-fluid border-top p-4 movingGradeient">
+        <!--Sub-title-->
         <div class="container border-all">
             <div class="row d-flex justify-content-center border-bottom">
                 <div class="col-md-12">
@@ -23,8 +18,10 @@
                     <p class="fs-4 text-white">You can edit the setting just by clicking on the panel</p>
                 </div>
             </div>
+
         <div class ="row d-flex py-3">
             <div class="col-md-5">
+                <!-- Display the current details container-->
                 <div class = "container border glassContainer mb-4">
                     <div class ="row d-block">
                         <div class = "col-md-12 py-3">
@@ -36,7 +33,7 @@
                         </div>
                     </div>
                 </div>
-
+                <!--Display changing password widget-->
                 <div class = "container border bg-info rounded-3 my-4 text-center">
                     <div class ="row d-block">
                         <div class = "col-md-12 py-2">
@@ -47,7 +44,7 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- Displau account deletion widget-->
                 <div class = "container border glassContainer bg-danger my-4 text-center">
                     <div class ="row d-block">
                         <div class = "col-md-12 py-2">
@@ -58,8 +55,8 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+            <!--Display the form to update the account details-->
             <div class="col-md-7">
                 <div class="container glassContainer py-1 pb-2">
                     <div class ="row d-block">
@@ -87,6 +84,7 @@
                                     <button type="submit" name="update" class="btn btn-primary fs-3" style = "width:100%;">Submit</button>
                                 </div>
                             </form>
+                            <!--End of the form-->
                         </div>
                     </div>
                 </div>
@@ -94,6 +92,8 @@
         </div>
     </div>
 </div>
+
+<!--Footer-->
 <nav class="navbar border-top ">
     <div class="d-flex justify-content-center align-items-center w-100">
         <h3 class="fw-light"> Embarcing Changes is our motto ➿ </h3>

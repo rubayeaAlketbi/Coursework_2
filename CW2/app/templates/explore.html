@@ -1,70 +1,98 @@
-{%extends "home.html"%}
-{%block content%}
-    <div class="container-fluid border-top h-full">
-        <!--Section title -->
-        <div class="container-fluid border-bottom">
+{%extends "home.html"%} {%block content%}
+<div class="container-fluid border-top h-full">
+  <!--Section title -->
+  <div class="container-fluid border-bottom">
+    <div class="row">
+      <h1 class="display-3 fw-bold pt-4 p-6 text-center">
+        The Explore Page 🧭
+      </h1>
+    </div>
+    <div class="row pb-3 mb-3">
+      <p class="fs-3 fw-light text-center">
+        Click on the hub to Explore its activity
+      </p>
+    </div>
+  </div>
+  <!-- All Posts-->
+  <div
+    class="container-fluid rounded-1 border-left movingGrade d-grid"
+    ,
+    style="width: 100%; padding: 1rem"
+  >
+    <h1 class="display-3 fw-bold p-3 m-6 text-center text-white">
+      Spotlights ...
+    </h1>
+    <div class="row d-flex justify-content-center align-items-center p-3 gap-3">
+      {% for post in posts %}
+      <div class="col-md-11 growContainer">
+        <a
+          href="{{ url_for('post', post_id=post.id) }}"
+          style="text-decoration: none; color: black"
+        >
+          <div class="container normalContainer" id="{{ post.id }}">
             <div class="row">
-                <h1 class="display-3  fw-bold pt-4 p-6 text-center">The Explore Page 🧭</h1>
+              <div class="col-md-4 border-end">
+                <h4 class="fw-bold px-3 py-1">
+                  {{ userCache[post.author_id] }}
+                </h4>
+                <h5 class="fw-light px-3">
+                  {{ post.publish_date.strftime('%Y-%m-%d %H:%M') }}
+                </h5>
+              </div>
+              <div class="col-md-8 py-2">
+                <h4 class="fw-bold text-center">{{ post.title }}</h4>
+                <h3 class="fw-light text-center">{{ post.caption }}</h3>
+              </div>
             </div>
-            <div class="row pb-3 mb-3">
-                <p class="fs-3 fw-light text-center">Click on the hub to Explore its activity</p>
-            </div>
-        </div>
-        <!-- All Posts-->
-        <div class="container-fluid rounded-1 border-left movingGrade d-grid", style="width:100%; padding:1rem;">
-            <h1 class="display-3 fw-bold p-3 m-6 text-center text-white">Spotlights ...</h1>
-            <div class="row d-flex justify-content-center align-items-center p-3 gap-3">
-                {% for post in posts %}
-                <div class="col-md-11 growContainer">
-                    <a href="{{ url_for('post', post_id=post.id) }}" style="text-decoration:none; color:black;">
-                    <div class="container normalContainer" id="{{ post.id }}">
-                        <div class="row">
-                            <div class="col-md-4 border-end">
-                                <h4 class="fw-bold px-3 py-1">{{ userCache[post.author_id] }}</h4>
-                                <h5 class="fw-light px-3">{{ post.publish_date.strftime('%Y-%m-%d %H:%M') }}</h5>
-                            </div>
-                            <div class="col-md-8 py-2">
-                                <h4 class="fw-bold text-center">{{ post.title }}</h4>
-                                <h3 class="fw-light text-center">{{ post.caption }}</h3>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                </div>
-                {% endfor %}
-            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
 
-            <nav aria-label="Page navigation py-3">
-                <ul class="pagination justify-content-center pagination-lg">
-                    <li class="page-item {% if not paginationPost.has_prev %}disabled{% endif %}">
-                        <a class="page-link" href="{% if paginationPost.has_prev %}{{ url_for('explore', page=paginationPost.prev_num) }}{% else %}#{% endif %}">Previous</a>
-                    </li>
-                    {% for page_num in paginationPost.iter_pages() %}
-                        {% if paginationPost.page == page_num %}
-                            <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
-                        {% else %}
-                            <li class="page-item"><a href="{{ url_for('explore', page=page_num) }}" class="page-link">{{ page_num }}</a></li>
-                        {% endif %}
-                    {% endfor %}
-  
-                    <li class="page-item {% if not paginationPost.has_next %}disabled{% endif %}">
-                        <a class="page-link" href="{% if paginationPost.has_next %}{{ url_for('explore', page=paginationPost.next_num) }}{% else %}#{% endif %}">Next</a>
-                    </li>
-                </ul>
-            </nav>
+    <nav aria-label="Page navigation py-3">
+      <ul class="pagination justify-content-center pagination-lg">
+        <li
+          class="page-item {% if not paginationPost.has_prev %}disabled{% endif %}"
+        >
+          <a
+            class="page-link"
+            href="{% if paginationPost.has_prev %}{{ url_for('explore', page=paginationPost.prev_num) }}{% else %}#{% endif %}"
+            >Previous</a
+          >
+        </li>
+        {% for page_num in paginationPost.iter_pages() %} {% if
+        paginationPost.page == page_num %}
+        <li class="page-item active">
+          <span class="page-link">{{ page_num }}</span>
+        </li>
+        {% else %}
+        <li class="page-item">
+          <a href="{{ url_for('explore', page=page_num) }}" class="page-link"
+            >{{ page_num }}</a
+          >
+        </li>
+        {% endif %} {% endfor %}
 
-        </div>
-    </div>  
-
-    <nav class="navbar border-top border-bottom">
-        <div class="d-flex justify-content-center align-items-center w-100">
-            <h3 class="fw-light"> Share your ideas 💡</h3>
-        </div>
+        <li
+          class="page-item {% if not paginationPost.has_next %}disabled{% endif %}"
+        >
+          <a
+            class="page-link"
+            href="{% if paginationPost.has_next %}{{ url_for('explore', page=paginationPost.next_num) }}{% else %}#{% endif %}"
+            >Next</a
+          >
+        </li>
+      </ul>
     </nav>
-{%endblock content%}
+  </div>
+</div>
 
-{% block scripts %}
-    <script src="{{ url_for('static', filename='js/posts.js') }}"></script>
+<nav class="navbar border-top border-bottom">
+  <div class="d-flex justify-content-center align-items-center w-100">
+    <h3 class="fw-light">Share your ideas 💡</h3>
+  </div>
+</nav>
+{%endblock content%} {% block scripts %}
+<script src="{{ url_for('static', filename='js/posts.js') }}"></script>
 {% endblock scripts %}
-
-

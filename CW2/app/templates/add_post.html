@@ -1,36 +1,53 @@
-{% extends "home.html" %}
-{% block content %}
-
-<div class = "container-fluid movingGrade h-full py-4">
-    <div class="row">
-        <div class = "col-md-12 mb-4">
-            <h1 class="text-center fw-bold text-white display-2"> Share your Wisdom 🌠</h1>
+{% extends "home.html" %} {% block content %}
+<!-- Create a container that will hold the form and the moving backgorund-->
+<div class="container-fluid movingGrade h-full py-4">
+  <div class="row">
+    <!-- The title columnn-->
+    <div class="col-md-12 mb-4">
+      <h1 class="text-center fw-bold text-white display-2">
+        Share your Wisdom 🌠
+      </h1>
+    </div>
+    <!-- The form column-->
+    <div class="col-md-12">
+      <form
+        method="post"
+        class="formContainer glassContainer p-4"
+        style="max-width: 40rem; border-radius: 10px"
+      >
+        {{post_form.hidden_tag()}}
+        <div class="mb-1 p-3">
+          {{post_form.title.label(class="form-label text-white fs-3")}}
+          {{post_form.title(class="form-control fs-3")}}
         </div>
-    <div class = "col-md-12">
-        <form method = "post" class="formContainer glassContainer p-4" style="max-width:40rem; border-radius:10px;" >
-            {{post_form.hidden_tag()}}
-            <div class="mb-1 p-3">
-                {{post_form.title.label(class="form-label text-white fs-3")}}
-                {{post_form.title(class="form-control fs-3")}}
-            </div>
-            <div class="mb-1 p-3">
-                {{post_form.caption.label(class="form-label text-white fs-3")}}
-                {{post_form.caption(class="form-control fs-3")}}
-            </div>
-            <div class="mb-1 p-3 d-flex">
-                {{post_form.postButton(class="btn btn-primary btn-lg" , style="width:100%; margin:auto;")}}
-            </div>
-        </form>
+        <div class="mb-1 p-3">
+          {{post_form.caption.label(class="form-label text-white fs-3")}}
+          {{post_form.caption(class="form-control fs-3")}}
+        </div>
+        <div class="mb-1 p-3 d-flex">
+          {{post_form.postButton(class="btn btn-primary btn-lg" ,
+          style="width:100%; margin:auto;")}}
+        </div>
+      </form>
     </div>
-    </div>
+    <!--End of the form-->
+  </div>
 </div>
 
+<!--The sticky navbar for quick access-->
 <footer class="navbar banner border-top">
-    <div class="container d-flex justify-content-center align-items-center p-3">
-        <a href="{{ url_for('my_page') }}" class="text-white btn btn-primary btn-lg mx-2">My Page</a>
-        <a href="{{ url_for('explore') }}" class="text-white btn btn-primary btn-lg mx-2">Explore</a>
-    </div>
+  <div class="container d-flex justify-content-center align-items-center p-3">
+    <a
+      href="{{ url_for('my_page') }}"
+      class="text-white btn btn-primary btn-lg mx-2"
+      >My Page</a
+    >
+    <a
+      href="{{ url_for('explore') }}"
+      class="text-white btn btn-primary btn-lg mx-2"
+      >Explore</a
+    >
+  </div>
 </footer>
-
 
 {% endblock content%}

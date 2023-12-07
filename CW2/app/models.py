@@ -1,5 +1,5 @@
-from app import db 
-from werkzeug.security import generate_password_hash, check_password_hash 
+from app import db
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_login import UserMixin
 
@@ -16,6 +16,8 @@ from flask_login import UserMixin
     The user relation has one to many relationship with post relation.
     User can have one or many post but the post can have only one user.
 '''
+
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -25,42 +27,61 @@ class User(db.Model, UserMixin):
     biography = db.Column(db.Text, nullable=True)
     avatar = db.Column(db.String(), nullable=True)
     posts = db.relationship('Post', backref='user', lazy=True)
-    
+
     # Prevent password from being accessed
     @property
     def password(self):
         raise AttributeError('password: write-only field , not readable')
     # Generate password hash
+
     @password.setter
     def password(self, password):
         self.passwordHashed = generate_password_hash(password)
     # Verify password hash
+
     def verify_password(self, password):
         return check_password_hash(self.passwordHashed, password)
+
 
 ''' Post class for database model which post has id, title, caption, publish_date, author_id. The
     post relation has one to many relationship with comment relation. Post can have one or many
     comments. The comment can have only one post. The post relation has one to many relationship
     with user relation. Post can have one or many users. The user can have only one post.
 '''
+
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     caption = db.Column(db.Text, nullable=False)
     publish_date = db.Column(db.DateTime, default=datetime.utcnow())
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    tags = db.relationship('Tag', secondary='post_tag', backref=db.backref('posts', lazy='dynamic'))
-    
+    tags = db.relationship('Tag', secondary='post_tag',
+                           backref=db.backref('posts', lazy='dynamic'))
+
+
 ''' Tag class which uses tags to categorise posts.'''
+
+
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
 
+
 ''' Association table for many to many relationship between post and tag relation.'''
 post_tag = db.Table('post_tag',
-    db.Column('post_id', db.Integer, db.ForeignKey('post.id'), primary_key=True),
-    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True)
-)
+                    db.Column('post_id', db.Integer, db.ForeignKey(
+                        'post.id'), primary_key=True),
+                    db.Column('tag_id', db.Integer, db.ForeignKey(
+                        'tag.id'), primary_key=True)
+                    )
+
+
+''' Comment class which has id, text, publish_date, author_id, post_id. The comment relation has
+    one to many relationship with user relation. Comment can have one or many users. The user can
+    have only one comment. The comment relation has one to many relationship with post relation.
+    Comment can have one or many posts. The post can have only one comment.'''
+
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -68,4 +89,3 @@ class Comment(db.Model):
     publish_date = db.Column(db.DateTime, default=datetime.utcnow())
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    
