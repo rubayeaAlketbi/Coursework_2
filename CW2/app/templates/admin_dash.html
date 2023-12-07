@@ -11,36 +11,22 @@
         </div>
     </div>
 
-    <div class="container-fluid border-bottom-black py-3 movingGradeient h-full rounded-3">
-        <table class = "table table-hover table-striped table-bordered text-center fs-4">
-            <thead>
-                <!--Table headers-->
-                <tr>
-                    <th scope="col fs-2">Username</th>
-                    <th scope="col fs-2">Full Name</th>
-                    <th scope="col fs-2">Number of Posts</th>
-                    <th scope="col fs-2">Number of Comments</th>
-                    <th scope="col fs-2">Delete Account</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for user in users %}
-                <tr>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user_posts_counts[user.id] }}</td>
-                    <td>{{ user_comments_counts[user.id] }}</td>
-                    <!-- ... -->
-                    <td>
-                        <!-- Delete User Form -->
-                        <form action="{{ url_for('deleteUsers', user_id=user.id) }}" method="post">
-                            {{ delete_user_form.hidden_tag() }}
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="container border-bottom-black py-3 movingGradeient h-full rounded-3">
+        {% for user in users %}
+        <div class="row mb-2">
+            <div class="col-12 col-md-2"><strong>Username:</strong> {{ user.username }}</div>
+            <div class="col-12 col-md-2"><strong>Full Name:</strong> {{ user.name }}</div>
+            <div class="col-6 col-md-2"><strong>Posts:</strong> {{ user_posts_counts[user.id] }}</div>
+            <div class="col-6 col-md-2"><strong>Comments:</strong> {{ user_comments_counts[user.id] }}</div>
+            <div class="col-12 col-md-4">
+                <form action="{{ url_for('deleteUsers', user_id=user.id) }}" method="post">
+                    {{ delete_user_form.hidden_tag() }}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
     </div>
+    
+    
 {%endblock content%}
